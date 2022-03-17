@@ -15,14 +15,30 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
 import { useHistory } from 'react-router-dom'
+import axios from 'axios'
+import { API_URL } from 'src/constant'
 
 const Login = () => {
   const history = useHistory()
 
   // TODO: Update API
-  const onSubmit = () => {
-    localStorage.setItem('id_token', 'NEEDS_TO_BE_UPDATED_AS_PER_API')
-    history.replace('/dashboard')
+  const onSubmit = (event) => {
+    event.preventDefault()
+    console.log(event.target.email.value)
+    console.log(event.target.password.value)
+    axios
+      .post(API_URL + '/login', {
+        email: event.target.email.value,
+        password: event.target.password.value,
+      })
+      .then((res) => {
+        if (res?.data?.data?.token) {
+          localStorage.setItem('id_token', res?.data?.data?.token)
+          history.replace('/dashboard')
+          return
+        }
+        console.error('NO Token in the response payload')
+      })
   }
 
   return (
@@ -40,13 +56,20 @@ const Login = () => {
                       <CInputGroupText>
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
-                      <CFormInput required placeholder="Username" autoComplete="username" />
+                      <CFormInput
+                        name="email"
+                        type="email"
+                        required
+                        placeholder="Email"
+                        autoComplete="email"
+                      />
                     </CInputGroup>
                     <CInputGroup className="mb-4">
                       <CInputGroupText>
                         <CIcon icon={cilLockLocked} />
                       </CInputGroupText>
                       <CFormInput
+                        name="password"
                         required
                         type="password"
                         placeholder="Password"
