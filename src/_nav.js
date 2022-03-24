@@ -5,7 +5,6 @@ import {
   cilCalculator,
   cilChartPie,
   cilCursor,
-  cilDrop,
   cilNotes,
   cilPencil,
   cilPuzzle,
@@ -28,25 +27,21 @@ const _nav = [
   },
   {
     component: CNavItem,
-    name: 'Colors',
-    to: '/theme/colors',
-    icon: <CIcon icon={cilDrop} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavItem,
     name: 'Users',
     to: '/users',
     icon: <CIcon icon={cilUser} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
+    name: 'App Improvement',
+    to: '/app-improvement-suggestion',
+    icon: <CIcon icon={cilPuzzle} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
     name: 'Articles',
     to: '/articles',
     icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavTitle,
-    name: 'Components',
   },
   {
     component: CNavGroup,

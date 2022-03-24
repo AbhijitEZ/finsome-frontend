@@ -2,8 +2,9 @@ import React from 'react'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Users = React.lazy(() => import('./views/users/Users'))
+const AppImprovement = React.lazy(() => import('./views/app-improvement/AppImprovement'))
 const Articles = React.lazy(() => import('./views/articles/Articles'))
-const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
+// const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
 
 // Base
@@ -55,10 +56,11 @@ const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
+  /* SECTION: Application routes */
   { path: '/users', name: 'Users', component: Users },
+  { path: '/app-improvement-suggestion', name: 'App Improvement', component: AppImprovement },
   { path: '/articles', name: 'Articles', component: Articles },
-  { path: '/theme', name: 'Theme', component: Colors, exact: true },
-  { path: '/theme/colors', name: 'Colors', component: Colors },
+  /* !SECTION: Application routes */
   { path: '/theme/typography', name: 'Typography', component: Typography },
   { path: '/base', name: 'Base', component: Cards, exact: true },
   { path: '/base/accordion', name: 'Accordion', component: Accordion },
