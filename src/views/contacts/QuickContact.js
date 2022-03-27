@@ -14,16 +14,17 @@ import {
 } from '@coreui/react'
 import { serviceAuthManager } from 'src/util'
 import Spinner from 'src/components/Spinner'
+// import Spinner from 'src/components/Spinner'
 
-const AppImprovement = () => {
-  const [appImproves, setAppImprove] = React.useState([])
+const QuickContact = () => {
+  const [quickContacts, setQuickContacts] = React.useState([])
   const [loading, setLoading] = React.useState(true)
 
-  const fetchAppImprovements = async () => {
-    serviceAuthManager('/app-improvement-suggestions')
+  const fetchQuickContacts = async () => {
+    serviceAuthManager('/quick-contacts')
       .then((res) => {
         if (res.data?.data) {
-          setAppImprove(res.data?.data)
+          setQuickContacts(res.data?.data)
         }
       })
       .finally(() => {
@@ -32,7 +33,7 @@ const AppImprovement = () => {
   }
 
   React.useEffect(() => {
-    fetchAppImprovements()
+    fetchQuickContacts()
   }, [])
 
   if (loading) {
@@ -44,36 +45,36 @@ const AppImprovement = () => {
       <CRow>
         <CCol xs>
           <CCard className="mb-4">
-            <CCardHeader>App Improvement Suggestion</CCardHeader>
+            <CCardHeader>QuickContact</CCardHeader>
             <CCardBody>
               <CTable align="middle" className="mb-0 border" hover responsive>
                 <CTableHead color="light">
                   <CTableRow>
                     <CTableHeaderCell>Name</CTableHeaderCell>
-                    <CTableHeaderCell>Description</CTableHeaderCell>
-                    <CTableHeaderCell>Type</CTableHeaderCell>
+                    <CTableHeaderCell>Email</CTableHeaderCell>
+                    <CTableHeaderCell>Message</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
-                  {appImproves.map((item, index) => (
+                  {quickContacts.map((item, index) => (
                     <CTableRow v-for="item in tableItems" key={index}>
                       <CTableDataCell>
-                        <div>{item.fullname}</div>
+                        <div>{item.name}</div>
                         <div className="small text-medium-emphasis">
-                          <span>{item.phone_number}</span>
+                          <span>{item.created_at}</span>
                         </div>
+                      </CTableDataCell>
+
+                      <CTableDataCell>
+                        <div>{item?.email}</div>
                       </CTableDataCell>
 
                       <CTableDataCell>
                         <div className="clearfix" style={{ maxWidth: 535 }}>
                           <div className="float-start">
-                            <span>{item?.app_improvement_suggestion?.description || '-'}</span>
+                            <span>{item?.message || '-'}</span>
                           </div>
                         </div>
-                      </CTableDataCell>
-
-                      <CTableDataCell>
-                        <div>{item?.app_improvement_suggestion?.name}</div>
                       </CTableDataCell>
                     </CTableRow>
                   ))}
@@ -87,4 +88,4 @@ const AppImprovement = () => {
   )
 }
 
-export default AppImprovement
+export default QuickContact

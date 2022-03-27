@@ -20,41 +20,51 @@ import { cilPeople, cilTrash } from '@coreui/icons'
 import avatar1 from 'src/assets/images/avatars/1.jpg'
 
 import { serviceAuthManager } from 'src/util'
+import Spinner from 'src/components/Spinner'
 
 const Users = () => {
   const [users, setUsers] = React.useState([])
+  const [loading, setLoading] = React.useState(true)
 
   const fetchUsers = async () => {
-    serviceAuthManager('/users').then((res) => {
-      if (res.data?.data) {
-        const filteredUser = res.data?.data?.map((user) => {
-          return {
-            id: user._id,
-            avatar: {
-              src: user.profile_photo || avatar1,
-              status: user.is_registration_complete ? 'success' : 'danger',
-            },
-            user: {
-              name: user.fullname,
-              email: user?.email,
-              registered: user?.created_at,
-            },
+    serviceAuthManager('/users')
+      .then((res) => {
+        if (res.data?.data) {
+          const filteredUser = res.data?.data?.map((user) => {
+            return {
+              id: user._id,
+              avatar: {
+                src: user.profile_photo || avatar1,
+                status: user.is_registration_complete ? 'success' : 'danger',
+              },
+              user: {
+                name: user.fullname,
+                email: user?.email,
+                registered: user?.created_at,
+              },
 
-            usage: {
-              phone_number: user?.phone_country_code + user?.phone_number,
-            },
-          }
-        })
+              usage: {
+                phone_number: user?.phone_country_code + user?.phone_number,
+              },
+            }
+          })
 
-        console.log(res.data?.data, 'user data')
-        setUsers(filteredUser)
-      }
-    })
+          console.log(res.data?.data, 'user data')
+          setUsers(filteredUser)
+        }
+      })
+      .finally(() => {
+        setLoading(false)
+      })
   }
 
   React.useEffect(() => {
     fetchUsers()
   }, [])
+
+  if (loading) {
+    return <Spinner />
+  }
 
   return (
     <>

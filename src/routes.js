@@ -3,6 +3,7 @@ import React from 'react'
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Users = React.lazy(() => import('./views/users/Users'))
 const AppImprovement = React.lazy(() => import('./views/app-improvement/AppImprovement'))
+const QuickContact = React.lazy(() => import('./views/contacts/QuickContact'))
 const Articles = React.lazy(() => import('./views/articles/Articles'))
 // const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
@@ -51,14 +52,13 @@ const Badges = React.lazy(() => import('./views/notifications/badges/Badges'))
 const Modals = React.lazy(() => import('./views/notifications/modals/Modals'))
 const Toasts = React.lazy(() => import('./views/notifications/toasts/Toasts'))
 
-const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
-
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
   /* SECTION: Application routes */
   { path: '/users', name: 'Users', component: Users },
   { path: '/app-improvement-suggestion', name: 'App Improvement', component: AppImprovement },
+  { path: '/quick-contacts', name: 'Contacts', component: QuickContact },
   { path: '/articles', name: 'Articles', component: Articles },
   /* !SECTION: Application routes */
   { path: '/theme/typography', name: 'Typography', component: Typography },
@@ -100,7 +100,6 @@ const routes = [
   { path: '/notifications/badges', name: 'Badges', component: Badges },
   { path: '/notifications/modals', name: 'Modals', component: Modals },
   { path: '/notifications/toasts', name: 'Toasts', component: Toasts },
-  { path: '/widgets', name: 'Widgets', component: Widgets },
 ]
 
 export default routes
