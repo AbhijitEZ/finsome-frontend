@@ -13,9 +13,10 @@ import {
   CTableHead,
   CTableHeaderCell,
   CTableRow,
+  CButton,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilPeople, cilTrash } from '@coreui/icons'
+import { cilPeople } from '@coreui/icons'
 
 import avatar1 from 'src/assets/images/avatars/1.jpg'
 
@@ -46,6 +47,7 @@ const Users = () => {
               usage: {
                 phone_number: user?.phone_country_code + user?.phone_number,
               },
+              deleted_at: user?.deleted_at ?? null,
             }
           })
 
@@ -61,6 +63,15 @@ const Users = () => {
   React.useEffect(() => {
     fetchUsers()
   }, [])
+
+  const userTogglerHandler = (currentState, id) => {
+    serviceAuthManager('/toggle-user-status', 'post', {
+      status: !Boolean(currentState),
+      id,
+    }).then(() => {
+      fetchUsers()
+    })
+  }
 
   if (loading) {
     return <Spinner />
@@ -108,7 +119,13 @@ const Users = () => {
 
                       <CTableDataCell>
                         <strong>
-                          <CIcon icon={cilTrash} />
+                          <CButton
+                            color="link"
+                            onClick={() => userTogglerHandler(item?.deleted_at, item.id)}
+                          >
+                            {' '}
+                            {item?.deleted_at ? 'Enable' : 'Disable'}
+                          </CButton>
                         </strong>
                       </CTableDataCell>
                     </CTableRow>
