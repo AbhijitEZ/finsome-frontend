@@ -14,18 +14,29 @@ import {
   CTableHeaderCell,
   CTableRow,
   CButton,
+  CInputGroup,
+  CFormInput,
+  CFormSelect,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilPeople } from '@coreui/icons'
-
-import avatar1 from 'src/assets/images/avatars/1.jpg'
-
+import isEmpty from 'lodash.isempty'
+import { cilPeople, cilSearch, cilNotes } from '@coreui/icons'
+import avatar1 from 'src/assets/images/avatars/placeholder.jpg'
 import { serviceAuthManager } from 'src/util'
-import Spinner from 'src/components/Spinner'
+import AppModal from 'src/components/AppModal'
+import LoadingContainer from 'src/components/LoadingContainer'
+import { useFuzzyHandlerHook } from 'src/components/hook'
 
 const Users = () => {
+  const [viewModalCheck, setViewModalCheck] = React.useState(false)
+  const [userDetails, setUserDetails] = React.useState({})
   const [users, setUsers] = React.useState([])
+  const [filteredUsers, setFilteredUsers] = React.useState([])
   const [loading, setLoading] = React.useState(true)
+  const [currentStatusVal, setCurrentStatusVal] = React.useState('all')
+  const [currentSearchVal, setCurrentSearchVal] = React.useState('')
+
+  const { fuzzyHandler } = useFuzzyHandlerHook()
 
   const fetchUsers = async () => {
     serviceAuthManager('/users')
@@ -34,6 +45,9 @@ const Users = () => {
           const filteredUser = res.data?.data?.map((user) => {
             return {
               id: user._id,
+              fullname: user.fullname,
+              email: user.email,
+              phone_number: user.phone_number,
               avatar: {
                 src: user.profile_photo || avatar1,
                 status: user.is_registration_complete ? 'success' : 'danger',
@@ -48,6 +62,9 @@ const Users = () => {
                 phone_number: user?.phone_country_code + user?.phone_number,
               },
               deleted_at: user?.deleted_at ?? null,
+              meta_data: {
+                ...user,
+              },
             }
           })
 
@@ -73,16 +90,97 @@ const Users = () => {
     })
   }
 
-  if (loading) {
-    return <Spinner />
+  const triggerViewModal = (data) => {
+    if (data) {
+      setUserDetails(data)
+    }
+    setViewModalCheck((prevState) => !prevState)
   }
 
+  const handleSearchMechanism = () => {
+    let filterUsers = users.filter((user) => {
+      if ('enable' === currentStatusVal && !user.deleted_at) {
+        return true
+      }
+      if ('disable' === currentStatusVal && user.deleted_at) {
+        return true
+      }
+      if ('all' === currentStatusVal) {
+        return true
+      }
+
+      return false
+    })
+
+    if (!currentSearchVal) {
+      setFilteredUsers(filterUsers)
+      return
+    }
+    const searchData = fuzzyHandler(currentSearchVal, filterUsers, [
+      'fullname',
+      'email',
+      'phone_number',
+    ])
+
+    const finalSearchFilterData = searchData.map((search) => ({ ...search.obj }))
+    setFilteredUsers(finalSearchFilterData)
+  }
+
+  React.useEffect(() => {
+    if (users) {
+      handleSearchMechanism()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [users, currentStatusVal, currentSearchVal])
+
+  const handleStatusChangeFilter = (data) => {
+    setCurrentStatusVal(data.target.value)
+  }
+
+  const handleSearchInpChange = (evt) => {
+    evt.preventDefault()
+    setCurrentSearchVal(evt.target.elements.searchInput.value)
+  }
+
+  const usersData = React.useMemo(
+    () => (filteredUsers.length || currentSearchVal ? filteredUsers : users),
+    [filteredUsers, currentSearchVal, users],
+  )
+
   return (
-    <>
+    <LoadingContainer loading={loading}>
+      <CRow>
+        <CCol xs>
+          <CFormSelect
+            aria-label="Select Enable or Disable Filter"
+            onChange={handleStatusChangeFilter}
+          >
+            <option value="all">Select Enable or Disable Filter</option>
+            <option value="enable">Enable</option>
+            <option value="disable">Disable</option>
+          </CFormSelect>
+        </CCol>
+        <CCol xs></CCol>
+        <CCol xs className="align-self-end">
+          <form onSubmit={handleSearchInpChange}>
+            <CInputGroup className="mb-3">
+              <CFormInput
+                placeholder="Search with name or email or phonenumber"
+                aria-label="Example text with button addon"
+                aria-describedby="search-addon"
+                name="searchInput"
+              />
+              <CButton type="submit" color="secondary" variant="outline" id="search-addon">
+                <CIcon icon={cilSearch} />
+              </CButton>
+            </CInputGroup>
+          </form>
+        </CCol>
+      </CRow>
       <CRow>
         <CCol xs>
           <CCard className="mb-4">
-            <CCardHeader>Users</CCardHeader>
+            <CCardHeader>Users: ({usersData.length})</CCardHeader>
             <CCardBody>
               <CTable align="middle" className="mb-0 border" hover responsive>
                 <CTableHead color="light">
@@ -97,10 +195,15 @@ const Users = () => {
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
-                  {users.map((item, index) => (
+                  {usersData.map((item, index) => (
                     <CTableRow v-for="item in tableItems" key={index}>
                       <CTableDataCell className="text-center">
-                        <CAvatar size="md" src={item.avatar.src} status={item.avatar.status} />
+                        <CAvatar
+                          size="md"
+                          className="user-profile-img"
+                          src={item.avatar.src}
+                          status={item.avatar.status}
+                        />
                       </CTableDataCell>
                       <CTableDataCell>
                         <div>{item.user.name}</div>
@@ -118,15 +221,27 @@ const Users = () => {
                       </CTableDataCell>
 
                       <CTableDataCell>
-                        <strong>
-                          <CButton
-                            color="link"
-                            onClick={() => userTogglerHandler(item?.deleted_at, item.id)}
-                          >
-                            {' '}
-                            {item?.deleted_at ? 'Enable' : 'Disable'}
-                          </CButton>
-                        </strong>
+                        <CRow>
+                          <CCol>
+                            <CButton
+                              type="button"
+                              color="secondary"
+                              variant="outline"
+                              onClick={() => triggerViewModal(item.meta_data)}
+                            >
+                              <CIcon icon={cilNotes} />
+                            </CButton>
+                            <strong>
+                              <CButton
+                                color="link"
+                                onClick={() => userTogglerHandler(item?.deleted_at, item.id)}
+                              >
+                                {' '}
+                                {item?.deleted_at ? 'Enable' : 'Disable'}
+                              </CButton>
+                            </strong>
+                          </CCol>
+                        </CRow>
                       </CTableDataCell>
                     </CTableRow>
                   ))}
@@ -135,8 +250,182 @@ const Users = () => {
             </CCardBody>
           </CCard>
         </CCol>
+        <AppModal visible={viewModalCheck} setVisible={setViewModalCheck} title="User Details">
+          {!isEmpty(userDetails) ? (
+            <form>
+              <div className="row align-items-center mb-2">
+                <div className="col-2">
+                  <label htmlFor="">Fullname</label>
+                </div>
+                <div className="col-9">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="-"
+                    value={userDetails?.fullname ?? ''}
+                    readOnly
+                  />
+                </div>
+              </div>
+              <div className="row align-items-center mb-2">
+                <div className="col-2">
+                  <label htmlFor="">Email</label>
+                </div>
+                <div className="col-9">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="-"
+                    value={userDetails?.email ?? ''}
+                    readOnly
+                  />
+                </div>
+              </div>
+              <div className="row align-items-center mb-2">
+                <div className="col-2">
+                  <label htmlFor="">Gender</label>
+                </div>
+                <div className="col-9">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="-"
+                    value={userDetails?.gender ?? ''}
+                    readOnly
+                  />
+                </div>
+              </div>
+              <div className="row align-items-center mb-2">
+                <div className="col-2">
+                  <label htmlFor="">Username</label>
+                </div>
+                <div className="col-9">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="-"
+                    value={userDetails?.username ?? ''}
+                    readOnly
+                  />
+                </div>
+              </div>
+              <div className="row align-items-center mb-2">
+                <div className="col-2">
+                  <label htmlFor="">Phone Number</label>
+                </div>
+                <div className="col-9">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="-"
+                    value={userDetails?.phone_country_code + userDetails?.phone_number ?? ''}
+                    readOnly
+                  />
+                </div>
+              </div>
+              <div className="row align-items-center mb-2">
+                <div className="col-3">
+                  <label htmlFor="">Registration Complete</label>
+                </div>
+                <div className="col-8">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="-"
+                    value={userDetails?.is_registration_complete ?? ''}
+                    readOnly
+                  />
+                </div>
+              </div>
+              <div className="row align-items-center mb-2">
+                <div className="col-2">
+                  <label htmlFor="">BirthDate</label>
+                </div>
+                <div className="col-9">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="-"
+                    value={userDetails?.birth_date ?? ''}
+                    readOnly
+                  />
+                </div>
+              </div>
+              <div className="row align-items-center mb-2">
+                <div className="col-2">
+                  <label htmlFor="">Trading Exp</label>
+                </div>
+                <div className="col-9">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="-"
+                    value={userDetails?.trading_exp ?? ''}
+                    readOnly
+                  />
+                </div>
+              </div>
+              <div className="row align-items-center mb-2">
+                <div className="col-3">
+                  <label htmlFor="">Instagram Link</label>
+                </div>
+                <div className="col-8">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="-"
+                    value={userDetails?.instagram_link ?? ''}
+                    readOnly
+                  />
+                </div>
+              </div>
+              <div className="row align-items-center mb-2">
+                <div className="col-3">
+                  <label htmlFor="">Telegram Link</label>
+                </div>
+                <div className="col-8">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="-"
+                    value={userDetails?.telegram_link ?? ''}
+                    readOnly
+                  />
+                </div>
+              </div>
+              <div className="row align-items-center mb-2">
+                <div className="col-3">
+                  <label htmlFor="">Youtube Link</label>
+                </div>
+                <div className="col-8">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="-"
+                    value={userDetails?.youtube_link ?? ''}
+                    readOnly
+                  />
+                </div>
+              </div>
+              <div className="row align-items-center mb-2">
+                <div className="col-2">
+                  <label htmlFor="">Bio</label>
+                </div>
+                <div className="col-9">
+                  <textarea
+                    type="text"
+                    className="form-control"
+                    placeholder="-"
+                    value={userDetails?.bio ?? ''}
+                    readOnly
+                  />
+                </div>
+              </div>
+            </form>
+          ) : null}
+        </AppModal>
       </CRow>
-    </>
+    </LoadingContainer>
   )
 }
 
