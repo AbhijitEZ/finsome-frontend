@@ -4,6 +4,7 @@ const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Users = React.lazy(() => import('./views/users/Users'))
 const AppImprovement = React.lazy(() => import('./views/app-improvement/AppImprovement'))
 const QuickContact = React.lazy(() => import('./views/contacts/QuickContact'))
+const PrivacyPolicy = React.lazy(() => import('./views/privacy-policy/PrivacyPolicy'))
 const Articles = React.lazy(() => import('./views/articles/Articles'))
 // const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
@@ -59,6 +60,7 @@ const routes = [
   { path: '/users', name: 'Users', component: Users },
   { path: '/app-improvement-suggestion', name: 'App Improvement', component: AppImprovement },
   { path: '/quick-contacts', name: 'Contacts', component: QuickContact },
+  { path: '/privacy-policy', name: 'Privacy Policy', component: PrivacyPolicy },
   { path: '/articles', name: 'Articles', component: Articles },
   /* !SECTION: Application routes */
   { path: '/theme/typography', name: 'Typography', component: Typography },
