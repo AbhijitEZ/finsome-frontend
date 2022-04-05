@@ -18,17 +18,21 @@ import {
   CFormInput,
   CFormSelect,
 } from '@coreui/react'
+import debounce from 'lodash.debounce'
 import CIcon from '@coreui/icons-react'
 import isEmpty from 'lodash.isempty'
-import { cilPeople, cilSearch, cilNotes } from '@coreui/icons'
+import { cilPeople, cilSearch, cilNotes, cilTrash } from '@coreui/icons'
 import avatar1 from 'src/assets/images/avatars/placeholder.jpg'
 import { serviceAuthManager } from 'src/util'
 import AppModal from 'src/components/AppModal'
 import LoadingContainer from 'src/components/LoadingContainer'
 import { useFuzzyHandlerHook } from 'src/components/hook'
+import { toast } from 'react-toastify'
 
 const Users = () => {
   const [viewModalCheck, setViewModalCheck] = React.useState(false)
+  const [deleteUserModalVisible, setDeleteUserModalVisible] = React.useState(false)
+  const [deleteUserId, setDeleteUserId] = React.useState('')
   const [userDetails, setUserDetails] = React.useState({})
   const [users, setUsers] = React.useState([])
   const [filteredUsers, setFilteredUsers] = React.useState([])
@@ -90,11 +94,53 @@ const Users = () => {
     })
   }
 
+  // eslint-disable-next-line no-use-before-define
+
   const triggerViewModal = (data) => {
     if (data) {
       setUserDetails(data)
     }
     setViewModalCheck((prevState) => !prevState)
+  }
+
+  const deleteUserModalOpen = (id) => {
+    if (!id) {
+      setDeleteUserId('')
+      setDeleteUserModalVisible(false)
+      return
+    }
+
+    setDeleteUserId(id)
+    setDeleteUserModalVisible(true)
+  }
+
+  const handleDeleteUser = () => {
+    serviceAuthManager(`/user/${deleteUserId}`, 'delete', {})
+      .then((res) => {
+        toast.success(res?.data?.message, {
+          position: 'top-center',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        })
+        fetchUsers()
+      })
+      .catch((error) => {
+        console.log('ERROR:', error)
+        toast.error('Failed to delete user', {
+          position: 'top-center',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        })
+      })
+      .finally(setDeleteUserModalVisible(false))
   }
 
   const handleSearchMechanism = () => {
@@ -142,6 +188,14 @@ const Users = () => {
     setCurrentSearchVal(evt.target.elements.searchInput.value)
   }
 
+  const handleSearchOnFormInpChange = (evt) => {
+    evt.preventDefault()
+    setCurrentSearchVal(evt.target.value)
+  }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debounceFn = React.useCallback(debounce(handleSearchOnFormInpChange, 1000), [])
+
   const usersData = React.useMemo(
     () => (filteredUsers.length || currentSearchVal ? filteredUsers : users),
     [filteredUsers, currentSearchVal, users],
@@ -152,17 +206,17 @@ const Users = () => {
       <CRow>
         <CCol xs>
           <CFormSelect
-            aria-label="Select Enable or Disable Filter"
+            aria-label="Select Active or InActive Filter"
             onChange={handleStatusChangeFilter}
           >
-            <option value="all">Select Enable or Disable Filter</option>
-            <option value="enable">Enable</option>
-            <option value="disable">Disable</option>
+            <option value="all">Select Active or InActive Filter</option>
+            <option value="enable">Active</option>
+            <option value="disable">InActive</option>
           </CFormSelect>
         </CCol>
         <CCol xs></CCol>
         <CCol xs className="align-self-end">
-          <form onSubmit={handleSearchInpChange}>
+          <form onSubmit={handleSearchInpChange} onChange={debounceFn}>
             <CInputGroup className="mb-3">
               <CFormInput
                 placeholder="Search with name or email or phonenumber"
@@ -180,7 +234,7 @@ const Users = () => {
       <CRow>
         <CCol xs>
           <CCard className="mb-4">
-            <CCardHeader>Users: ({usersData.length})</CCardHeader>
+            <CCardHeader>User Management: ({usersData.length})</CCardHeader>
             <CCardBody>
               <CTable align="middle" className="mb-0 border" hover responsive>
                 <CTableHead color="light">
@@ -206,9 +260,9 @@ const Users = () => {
                         />
                       </CTableDataCell>
                       <CTableDataCell>
-                        <div>{item.user.name}</div>
+                        <div>{item.user.name || 'N/A'}</div>
                         <div className="small text-medium-emphasis">
-                          <span>{item.user.email}</span> | Registered: {item.user.registered}
+                          <span>{item.user.email || '-'}</span> | Registered: {item.user.registered}
                         </div>
                       </CTableDataCell>
 
@@ -222,7 +276,7 @@ const Users = () => {
 
                       <CTableDataCell>
                         <CRow>
-                          <CCol>
+                          <CCol xs={2}>
                             <CButton
                               type="button"
                               color="secondary"
@@ -231,6 +285,18 @@ const Users = () => {
                             >
                               <CIcon icon={cilNotes} />
                             </CButton>
+                          </CCol>
+                          <CCol xs={2}>
+                            <CButton
+                              type="button"
+                              color="danger"
+                              variant="outline"
+                              onClick={() => deleteUserModalOpen(item.id)}
+                            >
+                              <CIcon icon={cilTrash} />
+                            </CButton>
+                          </CCol>
+                          <CCol xs={3}>
                             <strong>
                               <CButton
                                 color="link"
@@ -250,7 +316,12 @@ const Users = () => {
             </CCardBody>
           </CCard>
         </CCol>
-        <AppModal visible={viewModalCheck} setVisible={setViewModalCheck} title="User Details">
+        <AppModal
+          visible={viewModalCheck}
+          scrollable
+          setVisible={setViewModalCheck}
+          title="User Details"
+        >
           {!isEmpty(userDetails) ? (
             <form>
               <div className="row align-items-center mb-2">
@@ -423,6 +494,16 @@ const Users = () => {
               </div>
             </form>
           ) : null}
+        </AppModal>
+        <AppModal
+          visible={deleteUserModalVisible}
+          setVisible={deleteUserModalOpen}
+          title="Delete User?"
+          isSave
+          saveText={'Yes'}
+          handleSaveClick={handleDeleteUser}
+        >
+          <h5>Are you sure to delete this user?</h5>
         </AppModal>
       </CRow>
     </LoadingContainer>

@@ -40,6 +40,7 @@
     "core-js": "^3.19.1",
     "enzyme": "^3.11.0",
     "fuzzysort": "^1.2.1",
+    "lodash.debounce": "^4.0.8",
     "lodash.isempty": "^4.4.0",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
@@ -48,6 +49,7 @@
     "react-query": "^3.34.16",
     "react-redux": "^7.2.6",
     "react-router-dom": "^5.3.0",
+    "react-toastify": "^8.2.0",
     "redux": "4.1.2",
     "simplebar-react": "^2.3.6"
   },
