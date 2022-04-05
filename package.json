@@ -38,6 +38,7 @@
     "chart.js": "^3.6.0",
     "classnames": "^2.3.1",
     "core-js": "^3.19.1",
+    "date-fns": "^2.28.0",
     "enzyme": "^3.11.0",
     "fuzzysort": "^1.2.1",
     "lodash.debounce": "^4.0.8",

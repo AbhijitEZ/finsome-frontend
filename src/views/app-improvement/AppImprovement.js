@@ -12,7 +12,7 @@ import {
   CTableHeaderCell,
   CTableRow,
 } from '@coreui/react'
-import { serviceAuthManager } from 'src/util'
+import { dateFormatHandler, serviceAuthManager } from 'src/util'
 import Spinner from 'src/components/Spinner'
 
 const AppImprovement = () => {
@@ -50,8 +50,9 @@ const AppImprovement = () => {
                 <CTableHead color="light">
                   <CTableRow>
                     <CTableHeaderCell>Name</CTableHeaderCell>
-                    <CTableHeaderCell>Description</CTableHeaderCell>
                     <CTableHeaderCell>Type</CTableHeaderCell>
+                    <CTableHeaderCell style={{ maxWidth: 500 }}>Comment</CTableHeaderCell>
+                    <CTableHeaderCell>Submitted At</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>
@@ -65,7 +66,11 @@ const AppImprovement = () => {
                       </CTableDataCell>
 
                       <CTableDataCell>
-                        <div className="clearfix" style={{ maxWidth: 535 }}>
+                        <div>{item?.app_improvement_suggestion?.name}</div>
+                      </CTableDataCell>
+
+                      <CTableDataCell>
+                        <div className="clearfix" style={{ maxWidth: 500 }}>
                           <div className="float-start">
                             <span>{item?.app_improvement_suggestion?.description || '-'}</span>
                           </div>
@@ -73,7 +78,11 @@ const AppImprovement = () => {
                       </CTableDataCell>
 
                       <CTableDataCell>
-                        <div>{item?.app_improvement_suggestion?.name}</div>
+                        <div>
+                          {item?.app_improvement_suggestion?.timestamp
+                            ? dateFormatHandler(item.app_improvement_suggestion.timestamp)
+                            : '-'}
+                        </div>
                       </CTableDataCell>
                     </CTableRow>
                   ))}

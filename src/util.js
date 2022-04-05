@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { API_URL } from './constant'
+import { format, parseISO } from 'date-fns'
 
 export const serviceAuthManager = (url, method = 'get', data = {}) => {
   return axios({
@@ -10,4 +11,8 @@ export const serviceAuthManager = (url, method = 'get', data = {}) => {
     method,
     data,
   })
+}
+
+export const dateFormatHandler = (dateString) => {
+  return format(parseISO(dateString), 'MM-dd-yyyy H:m')
 }

@@ -303,7 +303,7 @@ const Users = () => {
                                 onClick={() => userTogglerHandler(item?.deleted_at, item.id)}
                               >
                                 {' '}
-                                {item?.deleted_at ? 'Enable' : 'Disable'}
+                                {item?.deleted_at ? 'Active' : 'InActive'}
                               </CButton>
                             </strong>
                           </CCol>
