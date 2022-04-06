@@ -12,7 +12,7 @@ import {
   CTableHeaderCell,
   CTableRow,
 } from '@coreui/react'
-import { serviceAuthManager } from 'src/util'
+import { dateFormatHandler, serviceAuthManager } from 'src/util'
 import Spinner from 'src/components/Spinner'
 // import Spinner from 'src/components/Spinner'
 
@@ -45,7 +45,7 @@ const QuickContact = () => {
       <CRow>
         <CCol xs>
           <CCard className="mb-4">
-            <CCardHeader>QuickContact</CCardHeader>
+            <CCardHeader>Contact</CCardHeader>
             <CCardBody>
               <CTable align="middle" className="mb-0 border" hover responsive>
                 <CTableHead color="light">
@@ -61,7 +61,7 @@ const QuickContact = () => {
                       <CTableDataCell>
                         <div>{item.name}</div>
                         <div className="small text-medium-emphasis">
-                          <span>{item.created_at}</span>
+                          <span>{item?.created_at ? dateFormatHandler(item.created_at) : '-'}</span>
                         </div>
                       </CTableDataCell>
 

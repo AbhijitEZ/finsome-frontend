@@ -1,6 +1,6 @@
 import React from 'react'
 import CIcon from '@coreui/icons-react'
-import { cilPencil, cilPuzzle, cilUser, cilContact } from '@coreui/icons'
+import { cilPencil, cilPuzzle, cilUser, cilContact, cilPaperclip } from '@coreui/icons'
 import { CNavItem } from '@coreui/react'
 
 const _nav = [
@@ -43,6 +43,12 @@ const _nav = [
     name: 'Privacy Policy',
     to: '/privacy-policy',
     icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Terms Condition',
+    to: '/terms-condition',
+    icon: <CIcon icon={cilPaperclip} customClassName="nav-icon" />,
   },
   // {
   //   component: CNavGroup,
