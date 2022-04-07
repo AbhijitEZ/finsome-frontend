@@ -6,6 +6,7 @@ import {
   CCardHeader,
   CCol,
   CFormInput,
+  CFormSelect,
   CInputGroup,
   CRow,
   CTable,
@@ -24,8 +25,10 @@ import { useFuzzyHandlerHook } from 'src/components/hook'
 
 const AppImprovement = () => {
   const [appImproves, setAppImprove] = React.useState([])
+  const [appTypes, setAppTypes] = React.useState([])
   const [loading, setLoading] = React.useState(true)
   const [currentSearchVal, setCurrentSearchVal] = React.useState('')
+  const [typeSelect, setTypeSelect] = React.useState('')
   const [filteredAppImp, setFilteredAppImp] = React.useState([])
   const { fuzzyHandler } = useFuzzyHandlerHook()
 
@@ -41,12 +44,29 @@ const AppImprovement = () => {
       })
   }
 
+  const fetchAppImproveTypes = async () => {
+    serviceAuthManager('/app-improvement-types', 'get', {}, true).then((res) => {
+      if (res.data?.data) {
+        setAppTypes(res.data?.data)
+      }
+    })
+  }
+
   const handleSearchMechanism = () => {
+    const filteredAppImproves = appImproves.filter((appType) => {
+      if (!typeSelect) {
+        return true
+      } else if (appType.app_improvement_suggestion.id === typeSelect) {
+        return true
+      }
+      return false
+    })
+
     if (!currentSearchVal) {
-      setFilteredAppImp([])
+      setFilteredAppImp(filteredAppImproves)
       return
     }
-    const searchData = fuzzyHandler(currentSearchVal, appImproves, [
+    const searchData = fuzzyHandler(currentSearchVal, filteredAppImproves, [
       'fullname',
       'phone_number',
       'app_improvement_suggestion.description',
@@ -58,6 +78,7 @@ const AppImprovement = () => {
   }
 
   React.useEffect(() => {
+    fetchAppImproveTypes()
     fetchAppImprovements()
   }, [])
 
@@ -66,7 +87,7 @@ const AppImprovement = () => {
       handleSearchMechanism()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [appImproves, currentSearchVal])
+  }, [appImproves, typeSelect, currentSearchVal])
 
   const handleSearchInpChange = (evt) => {
     evt.preventDefault()
@@ -76,6 +97,10 @@ const AppImprovement = () => {
   const handleSearchOnFormInpChange = (evt) => {
     evt.preventDefault()
     setCurrentSearchVal(evt.target.value)
+  }
+
+  const handleAppTypeChange = (evt) => {
+    setTypeSelect(evt.target.value)
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -89,6 +114,23 @@ const AppImprovement = () => {
   return (
     <LoadingContainer loading={loading}>
       <CRow>
+        <CCol xs>
+          {appTypes.length ? (
+            <CFormSelect
+              aria-label="Select Types"
+              placeholder="Select Types"
+              value={typeSelect}
+              onChange={handleAppTypeChange}
+            >
+              <option value={''}>Select Types</option>
+              {appTypes.map((type) => (
+                <option value={type._id} key={type._id}>
+                  {type.name}
+                </option>
+              ))}
+            </CFormSelect>
+          ) : null}
+        </CCol>
         <CCol xs></CCol>
         <CCol xs className="align-self-end">
           <form onSubmit={handleSearchInpChange} onChange={debounceFn}>
@@ -109,7 +151,7 @@ const AppImprovement = () => {
       <CRow>
         <CCol xs>
           <CCard className="mb-4">
-            <CCardHeader>App Improvement Suggestion</CCardHeader>
+            <CCardHeader>App Improvement Suggestion: ({appImpData.length})</CCardHeader>
             <CCardBody>
               <CTable align="middle" className="mb-0 border" hover responsive>
                 <CTableHead color="light">
