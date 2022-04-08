@@ -209,7 +209,7 @@ const Users = () => {
     },
     {
       name: 'Email',
-      selector: (row) => row.usage.email || 'N/A',
+      selector: (row) => row.email || 'N/A',
     },
     {
       name: 'Registration At',
