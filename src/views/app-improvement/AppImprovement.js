@@ -1,27 +1,12 @@
 import React from 'react'
-import {
-  CButton,
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CCol,
-  CFormInput,
-  CFormSelect,
-  CInputGroup,
-  CRow,
-  CTable,
-  CTableBody,
-  CTableDataCell,
-  CTableHead,
-  CTableHeaderCell,
-  CTableRow,
-} from '@coreui/react'
+import { CButton, CCol, CFormInput, CFormSelect, CInputGroup, CRow } from '@coreui/react'
 import { dateFormatHandler, serviceAuthManager } from 'src/util'
 import LoadingContainer from 'src/components/LoadingContainer'
 import CIcon from '@coreui/icons-react'
 import { cilSearch } from '@coreui/icons'
 import debounce from 'lodash.debounce'
 import { useFuzzyHandlerHook } from 'src/components/hook'
+import { RDTable } from 'src/components/RDTable'
 
 const AppImprovement = () => {
   const [appImproves, setAppImprove] = React.useState([])
@@ -111,6 +96,34 @@ const AppImprovement = () => {
     [filteredAppImp, currentSearchVal, appImproves],
   )
 
+  const columns = [
+    {
+      name: 'UserDetails',
+      selector: (row) => (
+        <div className="d-flex flex-column">
+          <span className="font-weight-bold">{row.fullname}</span>
+          <span>phone: {row.phone_number}</span>
+        </div>
+      ),
+    },
+    {
+      name: 'Type',
+      selector: (row) => row.app_improvement_suggestion?.name || '-',
+    },
+    {
+      name: 'Comment',
+      selector: (row) => row?.app_improvement_suggestion?.description || '-' || '-',
+      grow: 2,
+    },
+    {
+      name: 'Submitted At',
+      selector: (row) =>
+        row?.app_improvement_suggestion?.timestamp
+          ? dateFormatHandler(row?.app_improvement_suggestion?.timestamp)
+          : '-',
+    },
+  ]
+
   return (
     <LoadingContainer loading={loading}>
       <CRow>
@@ -149,54 +162,15 @@ const AppImprovement = () => {
         </CCol>
       </CRow>
       <CRow>
-        <CCol xs>
-          <CCard className="mb-4">
-            <CCardHeader>App Improvement Suggestion: ({appImpData.length})</CCardHeader>
-            <CCardBody>
-              <CTable align="middle" className="mb-0 border" hover responsive>
-                <CTableHead color="light">
-                  <CTableRow>
-                    <CTableHeaderCell>Name</CTableHeaderCell>
-                    <CTableHeaderCell>Type</CTableHeaderCell>
-                    <CTableHeaderCell style={{ maxWidth: 500 }}>Comment</CTableHeaderCell>
-                    <CTableHeaderCell>Submitted At</CTableHeaderCell>
-                  </CTableRow>
-                </CTableHead>
-                <CTableBody>
-                  {appImpData.map((item, index) => (
-                    <CTableRow v-for="item in tableItems" key={index}>
-                      <CTableDataCell>
-                        <div>{item.fullname}</div>
-                        <div className="small text-medium-emphasis">
-                          <span>{item.phone_number}</span>
-                        </div>
-                      </CTableDataCell>
-
-                      <CTableDataCell>
-                        <div>{item?.app_improvement_suggestion?.name}</div>
-                      </CTableDataCell>
-
-                      <CTableDataCell>
-                        <div className="clearfix" style={{ maxWidth: 500 }}>
-                          <div className="float-start">
-                            <span>{item?.app_improvement_suggestion?.description || '-'}</span>
-                          </div>
-                        </div>
-                      </CTableDataCell>
-
-                      <CTableDataCell>
-                        <div>
-                          {item?.app_improvement_suggestion?.timestamp
-                            ? dateFormatHandler(item.app_improvement_suggestion.timestamp)
-                            : '-'}
-                        </div>
-                      </CTableDataCell>
-                    </CTableRow>
-                  ))}
-                </CTableBody>
-              </CTable>
-            </CCardBody>
-          </CCard>
+        <CCol xs={12}>
+          <RDTable
+            columns={columns}
+            data={appImpData}
+            headerTitle={'App Improvement Suggestion'}
+            pagination
+            striped
+            keyField="_id"
+          />
         </CCol>
       </CRow>
     </LoadingContainer>

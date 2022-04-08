@@ -1,33 +1,17 @@
 import React from 'react'
 
-import {
-  CAvatar,
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CCol,
-  CRow,
-  CTable,
-  CTableBody,
-  CTableDataCell,
-  CTableHead,
-  CTableHeaderCell,
-  CTableRow,
-  CButton,
-  CInputGroup,
-  CFormInput,
-  CFormSelect,
-} from '@coreui/react'
+import { CAvatar, CCol, CRow, CButton, CInputGroup, CFormInput, CFormSelect } from '@coreui/react'
 import debounce from 'lodash.debounce'
 import CIcon from '@coreui/icons-react'
 import isEmpty from 'lodash.isempty'
-import { cilPeople, cilSearch, cilNotes, cilTrash } from '@coreui/icons'
+import { cilSearch, cilNotes, cilTrash } from '@coreui/icons'
 import avatar1 from 'src/assets/images/avatars/placeholder.jpg'
-import { serviceAuthManager } from 'src/util'
+import { dateFormatHandler, serviceAuthManager } from 'src/util'
 import AppModal from 'src/components/AppModal'
 import LoadingContainer from 'src/components/LoadingContainer'
 import { useFuzzyHandlerHook } from 'src/components/hook'
 import { toast } from 'react-toastify'
+import { RDTable } from 'src/components/RDTable'
 
 const Users = () => {
   const [viewModalCheck, setViewModalCheck] = React.useState(false)
@@ -201,6 +185,74 @@ const Users = () => {
     [filteredUsers, currentSearchVal, users],
   )
 
+  const columns = [
+    {
+      name: 'User Details',
+      selector: (row) => (
+        <div className="d-flex">
+          <CAvatar
+            size="md"
+            className="user-profile-img"
+            src={row.avatar.src}
+            status={row.avatar.status}
+          />
+
+          <div className="d-flex flex-column ml-1">
+            <span className="font-weight-bold">{row.fullname || 'N/A'}</span>
+          </div>
+        </div>
+      ),
+    },
+    {
+      name: 'Phone Number',
+      selector: (row) => row.usage.phone_number,
+    },
+    {
+      name: 'Email',
+      selector: (row) => row.usage.email || 'N/A',
+    },
+    {
+      name: 'Registration At',
+      selector: (row) => (row.user.registered ? dateFormatHandler(row.user.registered) : '-'),
+    },
+    {
+      name: 'Activity',
+      selector: (row) => (
+        <CRow className="w-100 activity-tab-cell flex-wrap overflow-visible">
+          <CCol xs={3}>
+            <CButton
+              type="button"
+              size="sm"
+              color="secondary"
+              variant="outline"
+              onClick={() => triggerViewModal(row.meta_data)}
+            >
+              <CIcon icon={cilNotes} />
+            </CButton>
+          </CCol>
+          <CCol xs={3}>
+            <CButton
+              type="button"
+              size="sm"
+              color="danger"
+              variant="outline"
+              onClick={() => deleteUserModalOpen(row.id)}
+            >
+              <CIcon icon={cilTrash} />
+            </CButton>
+          </CCol>
+          <CCol xs={4}>
+            <strong>
+              <CButton color="link" onClick={() => userTogglerHandler(row?.deleted_at, row.id)}>
+                {row?.deleted_at ? 'Active' : 'InActive'}
+              </CButton>
+            </strong>
+          </CCol>
+        </CRow>
+      ),
+    },
+  ]
+
   return (
     <LoadingContainer loading={loading}>
       <CRow>
@@ -232,90 +284,18 @@ const Users = () => {
         </CCol>
       </CRow>
       <CRow>
-        <CCol xs>
-          <CCard className="mb-4">
-            <CCardHeader>User Management: ({usersData.length})</CCardHeader>
-            <CCardBody>
-              <CTable align="middle" className="mb-0 border" hover responsive>
-                <CTableHead color="light">
-                  <CTableRow>
-                    <CTableHeaderCell className="text-center">
-                      <CIcon icon={cilPeople} />
-                    </CTableHeaderCell>
-                    <CTableHeaderCell>User</CTableHeaderCell>
-                    <CTableHeaderCell>Phone</CTableHeaderCell>
-
-                    <CTableHeaderCell>Activity</CTableHeaderCell>
-                  </CTableRow>
-                </CTableHead>
-                <CTableBody>
-                  {usersData.map((item, index) => (
-                    <CTableRow v-for="item in tableItems" key={index}>
-                      <CTableDataCell className="text-center">
-                        <CAvatar
-                          size="md"
-                          className="user-profile-img"
-                          src={item.avatar.src}
-                          status={item.avatar.status}
-                        />
-                      </CTableDataCell>
-                      <CTableDataCell>
-                        <div>{item.user.name || 'N/A'}</div>
-                        <div className="small text-medium-emphasis">
-                          <span>{item.user.email || '-'}</span> | Registered: {item.user.registered}
-                        </div>
-                      </CTableDataCell>
-
-                      <CTableDataCell>
-                        <div className="clearfix">
-                          <div className="float-start">
-                            <strong>{item.usage.phone_number}</strong>
-                          </div>
-                        </div>
-                      </CTableDataCell>
-
-                      <CTableDataCell>
-                        <CRow>
-                          <CCol xs={2}>
-                            <CButton
-                              type="button"
-                              color="secondary"
-                              variant="outline"
-                              onClick={() => triggerViewModal(item.meta_data)}
-                            >
-                              <CIcon icon={cilNotes} />
-                            </CButton>
-                          </CCol>
-                          <CCol xs={2}>
-                            <CButton
-                              type="button"
-                              color="danger"
-                              variant="outline"
-                              onClick={() => deleteUserModalOpen(item.id)}
-                            >
-                              <CIcon icon={cilTrash} />
-                            </CButton>
-                          </CCol>
-                          <CCol xs={3}>
-                            <strong>
-                              <CButton
-                                color="link"
-                                onClick={() => userTogglerHandler(item?.deleted_at, item.id)}
-                              >
-                                {' '}
-                                {item?.deleted_at ? 'Active' : 'InActive'}
-                              </CButton>
-                            </strong>
-                          </CCol>
-                        </CRow>
-                      </CTableDataCell>
-                    </CTableRow>
-                  ))}
-                </CTableBody>
-              </CTable>
-            </CCardBody>
-          </CCard>
+        <CCol xs={12}>
+          <RDTable
+            columns={columns}
+            data={usersData}
+            headerTitle={'User Management'}
+            pagination
+            striped
+            keyField="id"
+          />
         </CCol>
+
+        {/* Modals */}
         <AppModal
           visible={viewModalCheck}
           scrollable

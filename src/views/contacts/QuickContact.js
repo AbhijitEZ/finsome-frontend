@@ -1,20 +1,8 @@
 import React from 'react'
-import {
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CCol,
-  CRow,
-  CTable,
-  CTableBody,
-  CTableDataCell,
-  CTableHead,
-  CTableHeaderCell,
-  CTableRow,
-} from '@coreui/react'
+import { CCol, CRow } from '@coreui/react'
 import { dateFormatHandler, serviceAuthManager } from 'src/util'
-import Spinner from 'src/components/Spinner'
-// import Spinner from 'src/components/Spinner'
+import { RDTable } from 'src/components/RDTable'
+import LoadingContainer from 'src/components/LoadingContainer'
 
 const QuickContact = () => {
   const [quickContacts, setQuickContacts] = React.useState([])
@@ -36,55 +24,41 @@ const QuickContact = () => {
     fetchQuickContacts()
   }, [])
 
-  if (loading) {
-    return <Spinner />
-  }
+  const columns = [
+    {
+      name: 'Name',
+      selector: (row) => row.name,
+    },
+    {
+      name: 'Email',
+      selector: (row) => row.email,
+    },
+    {
+      name: 'Message',
+      selector: (row) => row.message || '-',
+      grow: 2,
+    },
+    {
+      name: 'Submitted At',
+      selector: (row) => (row?.created_at ? dateFormatHandler(row.created_at) : '-'),
+    },
+  ]
 
   return (
-    <>
+    <LoadingContainer loading={loading}>
       <CRow>
-        <CCol xs>
-          <CCard className="mb-4">
-            <CCardHeader>Contact</CCardHeader>
-            <CCardBody>
-              <CTable align="middle" className="mb-0 border" hover responsive>
-                <CTableHead color="light">
-                  <CTableRow>
-                    <CTableHeaderCell>Name</CTableHeaderCell>
-                    <CTableHeaderCell>Email</CTableHeaderCell>
-                    <CTableHeaderCell>Message</CTableHeaderCell>
-                  </CTableRow>
-                </CTableHead>
-                <CTableBody>
-                  {quickContacts.map((item, index) => (
-                    <CTableRow v-for="item in tableItems" key={index}>
-                      <CTableDataCell>
-                        <div>{item.name}</div>
-                        <div className="small text-medium-emphasis">
-                          <span>{item?.created_at ? dateFormatHandler(item.created_at) : '-'}</span>
-                        </div>
-                      </CTableDataCell>
-
-                      <CTableDataCell>
-                        <div>{item?.email}</div>
-                      </CTableDataCell>
-
-                      <CTableDataCell>
-                        <div className="clearfix" style={{ maxWidth: 535 }}>
-                          <div className="float-start">
-                            <span>{item?.message || '-'}</span>
-                          </div>
-                        </div>
-                      </CTableDataCell>
-                    </CTableRow>
-                  ))}
-                </CTableBody>
-              </CTable>
-            </CCardBody>
-          </CCard>
+        <CCol xs={12}>
+          <RDTable
+            columns={columns}
+            data={quickContacts}
+            headerTitle={'Contacts'}
+            pagination
+            striped
+            keyField="_id"
+          />
         </CCol>
       </CRow>
-    </>
+    </LoadingContainer>
   )
 }
 

@@ -4,3 +4,18 @@
     height: 100%;
   }
 }
+
+.ml-1 {
+  margin-left: 1rem;
+}
+
+.ml-2 {
+  margin-left: 2rem;
+}
+
+.activity-tab-cell {
+  text-overflow: unset !important;
+  & > * {
+    text-overflow: unset !important;
+  }
+}
