@@ -1,6 +1,7 @@
 import React from 'react'
 import { CCard, CCardBody, CCardHeader, CCol, CButton, CRow } from '@coreui/react'
 import { Editor } from '@tinymce/tinymce-react'
+import { toast } from 'react-toastify'
 import { serviceAuthManager } from 'src/util'
 import LoadingContainer from 'src/components/LoadingContainer'
 
@@ -35,6 +36,15 @@ const PrivacyPolicy = () => {
         content: currentData,
       })
         .then(() => {
+          toast.success('Privacy Policy updated', {
+            position: 'top-center',
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          })
           console.log('SUCCESSFULL UPDATED POLICY')
         })
         .finally(() => {})

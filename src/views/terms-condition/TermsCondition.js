@@ -36,7 +36,7 @@ const TermsCondition = () => {
         content: currentData,
       })
         .then(() => {
-          toast.success('Updated terms', {
+          toast.success('Terms and condition updated', {
             position: 'top-center',
             autoClose: 3000,
             hideProgressBar: false,
