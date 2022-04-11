@@ -13,6 +13,6 @@ export const serviceAuthManager = (url, method = 'get', data = {}, isMain) => {
   })
 }
 
-export const dateFormatHandler = (dateString) => {
-  return format(parseISO(dateString), 'dd-MM-yyyy')
+export const dateFormatHandler = (dateString, isTime) => {
+  return format(parseISO(dateString), isTime ? 'dd-MM-yyyy h:mm aa' : 'dd-MM-yyyy')
 }

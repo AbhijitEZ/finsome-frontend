@@ -213,7 +213,7 @@ const Users = () => {
     },
     {
       name: 'Registration At',
-      selector: (row) => (row.user.registered ? dateFormatHandler(row.user.registered) : '-'),
+      selector: (row) => (row.user.registered ? dateFormatHandler(row.user.registered, true) : '-'),
     },
     {
       name: 'Activity',
@@ -294,8 +294,8 @@ const Users = () => {
             keyField="id"
           />
         </CCol>
-
         {/* Modals */}
+        {/* User Detail Modal */}
         <AppModal
           visible={viewModalCheck}
           scrollable
@@ -304,11 +304,14 @@ const Users = () => {
         >
           {!isEmpty(userDetails) ? (
             <form>
+              <div className="d-flex">
+                <CAvatar size="xl" className="user-profile-img" src={userDetails.profile_photo} />
+              </div>
               <div className="row align-items-center mb-2">
-                <div className="col-2">
+                <div className="col-3">
                   <label htmlFor="">Fullname</label>
                 </div>
-                <div className="col-9">
+                <div className="col-8">
                   <input
                     type="text"
                     className="form-control"
@@ -319,10 +322,10 @@ const Users = () => {
                 </div>
               </div>
               <div className="row align-items-center mb-2">
-                <div className="col-2">
+                <div className="col-3">
                   <label htmlFor="">Email</label>
                 </div>
-                <div className="col-9">
+                <div className="col-8">
                   <input
                     type="text"
                     className="form-control"
@@ -333,10 +336,10 @@ const Users = () => {
                 </div>
               </div>
               <div className="row align-items-center mb-2">
-                <div className="col-2">
+                <div className="col-3">
                   <label htmlFor="">Gender</label>
                 </div>
-                <div className="col-9">
+                <div className="col-8">
                   <input
                     type="text"
                     className="form-control"
@@ -347,10 +350,10 @@ const Users = () => {
                 </div>
               </div>
               <div className="row align-items-center mb-2">
-                <div className="col-2">
+                <div className="col-3">
                   <label htmlFor="">Username</label>
                 </div>
-                <div className="col-9">
+                <div className="col-8">
                   <input
                     type="text"
                     className="form-control"
@@ -361,10 +364,10 @@ const Users = () => {
                 </div>
               </div>
               <div className="row align-items-center mb-2">
-                <div className="col-2">
+                <div className="col-3">
                   <label htmlFor="">Phone Number</label>
                 </div>
-                <div className="col-9">
+                <div className="col-8">
                   <input
                     type="text"
                     className="form-control"
@@ -389,10 +392,10 @@ const Users = () => {
                 </div>
               </div>
               <div className="row align-items-center mb-2">
-                <div className="col-2">
+                <div className="col-3">
                   <label htmlFor="">BirthDate</label>
                 </div>
-                <div className="col-9">
+                <div className="col-8">
                   <input
                     type="text"
                     className="form-control"
@@ -403,10 +406,10 @@ const Users = () => {
                 </div>
               </div>
               <div className="row align-items-center mb-2">
-                <div className="col-2">
+                <div className="col-3">
                   <label htmlFor="">Trading Exp</label>
                 </div>
-                <div className="col-9">
+                <div className="col-8">
                   <input
                     type="text"
                     className="form-control"
@@ -459,10 +462,10 @@ const Users = () => {
                 </div>
               </div>
               <div className="row align-items-center mb-2">
-                <div className="col-2">
+                <div className="col-3">
                   <label htmlFor="">Bio</label>
                 </div>
-                <div className="col-9">
+                <div className="col-8">
                   <textarea
                     type="text"
                     className="form-control"
@@ -475,6 +478,7 @@ const Users = () => {
             </form>
           ) : null}
         </AppModal>
+        {/* Confirmation Modal */}
         <AppModal
           visible={deleteUserModalVisible}
           setVisible={deleteUserModalOpen}
