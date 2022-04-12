@@ -1,5 +1,4 @@
 import React from 'react'
-
 import { CAvatar, CCol, CRow, CButton, CInputGroup, CFormInput, CFormSelect } from '@coreui/react'
 import debounce from 'lodash.debounce'
 import CIcon from '@coreui/icons-react'
@@ -12,6 +11,7 @@ import LoadingContainer from 'src/components/LoadingContainer'
 import { useFuzzyHandlerHook } from 'src/components/hook'
 import { toast } from 'react-toastify'
 import { RDTable } from 'src/components/RDTable'
+import { useHistory } from 'react-router-dom'
 
 const Users = () => {
   const [viewModalCheck, setViewModalCheck] = React.useState(false)
@@ -24,6 +24,7 @@ const Users = () => {
   const [currentStatusVal, setCurrentStatusVal] = React.useState('all')
   const [currentSearchVal, setCurrentSearchVal] = React.useState('')
 
+  const history = useHistory()
   const { fuzzyHandler } = useFuzzyHandlerHook()
 
   const fetchUsers = async () => {
@@ -58,6 +59,10 @@ const Users = () => {
 
           console.log(res.data?.data, 'user data')
           setUsers(filteredUser)
+
+          if (history?.location?.state) {
+            handleStatusChangeFilter({ target: { value: history.location.state } })
+          }
         }
       })
       .finally(() => {
@@ -67,6 +72,7 @@ const Users = () => {
 
   React.useEffect(() => {
     fetchUsers()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const userTogglerHandler = (currentState, id) => {
@@ -244,7 +250,7 @@ const Users = () => {
           <CCol xs={4}>
             <strong>
               <CButton color="link" onClick={() => userTogglerHandler(row?.deleted_at, row.id)}>
-                {row?.deleted_at ? 'Active' : 'InActive'}
+                {row?.deleted_at ? 'Active' : 'Deactive'}
               </CButton>
             </strong>
           </CCol>
@@ -258,12 +264,12 @@ const Users = () => {
       <CRow>
         <CCol xs>
           <CFormSelect
-            aria-label="Select Active or InActive Filter"
+            aria-label="Select Active or Deactive Filter"
             onChange={handleStatusChangeFilter}
           >
-            <option value="all">Select Active or InActive Filter</option>
+            <option value="all">Select Active or Deactive Filter</option>
             <option value="enable">Active</option>
-            <option value="disable">InActive</option>
+            <option value="disable">Deactive</option>
           </CFormSelect>
         </CCol>
         <CCol xs></CCol>
