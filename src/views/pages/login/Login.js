@@ -34,7 +34,7 @@ const Login = () => {
       .then((res) => {
         if (res?.data?.data?.token) {
           localStorage.setItem('id_token', res?.data?.data?.token)
-          history.replace('/users')
+          history.replace('/dashboard')
           return
         }
         console.error('NO Token in the response payload')
