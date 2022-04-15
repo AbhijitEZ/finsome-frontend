@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom'
 
 const WidgetsDropdown = ({ dashData }) => {
   return (
-    <CRow>
+    <CRow className="dashboard-widgets">
       <CCol sm={6} lg={3}>
         <Link to={'/users'}>
           <CWidgetStatsA
