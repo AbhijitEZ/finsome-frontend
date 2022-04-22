@@ -7,8 +7,9 @@ import {
   cilContact,
   cilPaperclip,
   cilSpeedometer,
+  cilCursor,
 } from '@coreui/icons'
-import { CNavItem } from '@coreui/react'
+import { CNavGroup, CNavItem } from '@coreui/react'
 
 const _nav = [
   {
@@ -56,6 +57,29 @@ const _nav = [
       color: 'info',
       text: 'NEW',
     },
+  },
+  {
+    component: CNavGroup,
+    name: 'Stocks',
+    to: '/stocks',
+    icon: <CIcon icon={cilCursor} customClassName="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Equity',
+        to: '/stocks/equity',
+      },
+      {
+        component: CNavItem,
+        name: 'Crypto',
+        to: '/stocks/crypto',
+      },
+      {
+        component: CNavItem,
+        name: 'Other',
+        to: '/stocks/other',
+      },
+    ],
   },
   // {
   //   component: CNavGroup,
