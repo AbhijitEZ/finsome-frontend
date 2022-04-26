@@ -6,7 +6,7 @@ export const serviceAuthManager = (url, method = 'get', data = {}, isMain) => {
   return axios({
     url: isMain ? MAIN_API_URL + url : API_URL + url,
     headers: {
-      Authorization: 'Bearer ' + localStorage.getItem('id_token'),
+      Authorization: 'Bearer ' + localStorage.getItem('id_token') || '',
     },
     method,
     data,

@@ -8,6 +8,8 @@ const PrivacyPolicy = React.lazy(() => import('./views/privacy-policy/PrivacyPol
 const TermsCondition = React.lazy(() => import('./views/terms-condition/TermsCondition'))
 const Articles = React.lazy(() => import('./views/articles/Articles'))
 const Equity = React.lazy(() => import('./views/stocks/Equity'))
+const Crypto = React.lazy(() => import('./views/stocks/Crypto'))
+const Other = React.lazy(() => import('./views/stocks/Other'))
 
 // const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
@@ -68,8 +70,8 @@ const routes = [
   { path: '/articles', name: 'Articles', component: Articles },
   { path: '/stocks', name: 'Stocks', component: Equity, exact: true },
   { path: '/stocks/equity', name: 'Equity', component: Equity },
-  { path: '/stocks/crypto', name: 'Crypto', component: Equity },
-  { path: '/stocks/other', name: 'Other', component: Equity },
+  { path: '/stocks/crypto', name: 'Crypto', component: Crypto },
+  { path: '/stocks/other', name: 'Other', component: Other },
   /* !SECTION: Application routes */
   { path: '/theme/typography', name: 'Typography', component: Typography },
   { path: '/base', name: 'Base', component: Cards, exact: true },

@@ -7,21 +7,20 @@ import CIcon from '@coreui/icons-react'
 import { cilNotes, cilSearch, cilTrash } from '@coreui/icons'
 import { useFuzzyHandlerHook } from 'src/components/hook'
 import debounce from 'lodash.debounce'
-import CountrySelect from 'src/components/select/CountrySelect'
 
-const Equity = () => {
-  const [stockEquities, setStockEquity] = React.useState([])
-  const [equityFilter, setFilteredEquity] = React.useState([])
+const Other = () => {
+  const [stockCrypto, setStockCrypto] = React.useState([])
+  const [cryptoFilter, setFilteredCrypto] = React.useState([])
   const [loading, setLoading] = React.useState(true)
   const [currentSearchVal, setCurrentSearchVal] = React.useState('')
-  const [selectedCountry, setCountry] = React.useState('')
+
   const { fuzzyHandler } = useFuzzyHandlerHook()
 
   const fetchStockEquity = async () => {
-    serviceAuthManager('/post/stock-type?type=EQUITY&has_all_data=true', 'get', {}, true)
+    serviceAuthManager('/post/stock-type?type=OTHER&has_all_data=true', 'get', {}, true)
       .then((res) => {
         if (res.data?.data) {
-          setStockEquity(res.data?.data?.stocks)
+          setStockCrypto(res.data?.data?.stocks)
         }
       })
       .finally(() => {
@@ -34,34 +33,26 @@ const Equity = () => {
   }, [])
 
   React.useEffect(() => {
-    if (stockEquities.length) {
+    if (stockCrypto.length) {
       handleSearchMechanism()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stockEquities, currentSearchVal])
+  }, [stockCrypto, currentSearchVal])
 
   const handleSearchMechanism = () => {
     if (!currentSearchVal) {
-      setFilteredEquity(stockEquities)
+      setFilteredCrypto(stockCrypto)
       return
     }
-    const searchData = fuzzyHandler(currentSearchVal, stockEquities, [
-      'name',
-      'code',
-      'country_code',
-    ])
+    const searchData = fuzzyHandler(currentSearchVal, stockCrypto, ['name', 'code'])
 
     const finalSearchFilterData = searchData.map((search) => ({ ...search.obj }))
-    setFilteredEquity(finalSearchFilterData)
+    setFilteredCrypto(finalSearchFilterData)
   }
 
   const handleSearchOnFormInpChange = (evt) => {
     evt.preventDefault()
     setCurrentSearchVal(evt.target.value)
-  }
-
-  const handleCountryChange = (e) => {
-    setCountry(e.target.value || '')
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -73,8 +64,8 @@ const Equity = () => {
   }
 
   const contactData = React.useMemo(
-    () => (equityFilter.length || currentSearchVal ? equityFilter : stockEquities),
-    [equityFilter, stockEquities, currentSearchVal],
+    () => (cryptoFilter.length || currentSearchVal ? cryptoFilter : stockCrypto),
+    [cryptoFilter, stockCrypto, currentSearchVal],
   )
 
   const columns = [
@@ -85,11 +76,6 @@ const Equity = () => {
     {
       name: 'Code',
       selector: (row) => row.code,
-    },
-    {
-      name: 'Country Code',
-      selector: (row) => row.country_code || '-',
-      grow: 2,
     },
     {
       name: 'Image',
@@ -129,14 +115,12 @@ const Equity = () => {
   return (
     <LoadingContainer loading={loading}>
       <CRow>
-        <CCol xs>
-          <CountrySelect value={selectedCountry} handleChange={handleCountryChange} />{' '}
-        </CCol>
+        <CCol xs></CCol>
         <CCol xs className="align-self-end">
           <form onSubmit={handleSearchInpChange} onChange={debounceFn}>
             <CInputGroup className="mb-3">
               <CFormInput
-                placeholder="Search with name or code or country code"
+                placeholder="Search with name or code"
                 aria-label="Example text with button addon"
                 aria-describedby="search-addon"
                 name="searchInput"
@@ -153,7 +137,7 @@ const Equity = () => {
           <RDTable
             columns={columns}
             data={contactData}
-            headerTitle={'Equity Stocks'}
+            headerTitle={'Crypto'}
             pagination
             striped
             keyField="_id"
@@ -164,4 +148,4 @@ const Equity = () => {
   )
 }
 
-export default Equity
+export default Other
