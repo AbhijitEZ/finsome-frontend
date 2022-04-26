@@ -8,6 +8,7 @@ import { cilNotes, cilSearch, cilTrash } from '@coreui/icons'
 import { useFuzzyHandlerHook } from 'src/components/hook'
 import debounce from 'lodash.debounce'
 import CountrySelect from 'src/components/select/CountrySelect'
+import FileUpload from './FileUpload'
 
 const Equity = () => {
   const [stockEquities, setStockEquity] = React.useState([])
@@ -129,6 +130,9 @@ const Equity = () => {
   return (
     <LoadingContainer loading={loading}>
       <CRow>
+        <CCol xs>
+          <FileUpload type="EQUITY" />
+        </CCol>
         <CCol xs>
           <CountrySelect value={selectedCountry} handleChange={handleCountryChange} />{' '}
         </CCol>

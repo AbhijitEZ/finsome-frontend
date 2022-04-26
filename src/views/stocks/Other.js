@@ -7,6 +7,7 @@ import CIcon from '@coreui/icons-react'
 import { cilNotes, cilSearch, cilTrash } from '@coreui/icons'
 import { useFuzzyHandlerHook } from 'src/components/hook'
 import debounce from 'lodash.debounce'
+import FileUpload from './FileUpload'
 
 const Other = () => {
   const [stockCrypto, setStockCrypto] = React.useState([])
@@ -115,7 +116,9 @@ const Other = () => {
   return (
     <LoadingContainer loading={loading}>
       <CRow>
-        <CCol xs></CCol>
+        <CCol xs>
+          <FileUpload type="OTHER" />
+        </CCol>
         <CCol xs className="align-self-end">
           <form onSubmit={handleSearchInpChange} onChange={debounceFn}>
             <CInputGroup className="mb-3">
