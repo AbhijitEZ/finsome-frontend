@@ -4,11 +4,12 @@ import { serviceAuthManager } from 'src/util'
 import { RDTable } from 'src/components/RDTable'
 import LoadingContainer from 'src/components/LoadingContainer'
 import CIcon from '@coreui/icons-react'
-import { cilNotes, cilSearch, cilTrash } from '@coreui/icons'
+import { cilSearch, cilTrash } from '@coreui/icons'
 import { useFuzzyHandlerHook } from 'src/components/hook'
 import debounce from 'lodash.debounce'
 import CountrySelect from 'src/components/select/CountrySelect'
 import FileUpload from './FileUpload'
+import { toastMessage } from 'src/helper/util'
 
 const Equity = () => {
   const [stockEquities, setStockEquity] = React.useState([])
@@ -18,7 +19,7 @@ const Equity = () => {
   const [selectedCountry, setCountry] = React.useState('')
   const { fuzzyHandler } = useFuzzyHandlerHook()
 
-  const fetchStockEquity = async () => {
+  const fetchStock = async () => {
     serviceAuthManager('/post/stock-type?type=EQUITY&has_all_data=true', 'get', {}, true)
       .then((res) => {
         if (res.data?.data) {
@@ -31,7 +32,7 @@ const Equity = () => {
   }
 
   React.useEffect(() => {
-    fetchStockEquity()
+    fetchStock()
   }, [])
 
   React.useEffect(() => {
@@ -39,14 +40,19 @@ const Equity = () => {
       handleSearchMechanism()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stockEquities, currentSearchVal])
+  }, [stockEquities, currentSearchVal, selectedCountry])
 
   const handleSearchMechanism = () => {
+    let filterMechData = [...stockEquities]
+    if (selectedCountry) {
+      filterMechData = filterMechData.filter((stk) => stk.country_code === selectedCountry)
+    }
+
     if (!currentSearchVal) {
-      setFilteredEquity(stockEquities)
+      setFilteredEquity(filterMechData)
       return
     }
-    const searchData = fuzzyHandler(currentSearchVal, stockEquities, [
+    const searchData = fuzzyHandler(currentSearchVal, filterMechData, [
       'name',
       'code',
       'country_code',
@@ -65,6 +71,24 @@ const Equity = () => {
     setCountry(e.target.value || '')
   }
 
+  const handleCSVUpdateSuccess = () => {
+    fetchStock()
+  }
+
+  const handleDeleteStock = (id) => {
+    serviceAuthManager(`/stock/EQUITY/${id}`, 'delete')
+      .then(() => {
+        toastMessage('success', 'Deleted the stock successfully')
+        fetchStock()
+      })
+      .catch((err) => {
+        toastMessage(
+          'error',
+          err?.response?.data?.message || 'Error while deleting the particular stock',
+        )
+      })
+  }
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounceFn = React.useCallback(debounce(handleSearchOnFormInpChange, 1000), [])
 
@@ -74,8 +98,9 @@ const Equity = () => {
   }
 
   const contactData = React.useMemo(
-    () => (equityFilter.length || currentSearchVal ? equityFilter : stockEquities),
-    [equityFilter, stockEquities, currentSearchVal],
+    () =>
+      equityFilter.length || currentSearchVal || selectedCountry ? equityFilter : stockEquities,
+    [equityFilter, stockEquities, currentSearchVal, selectedCountry],
   )
 
   const columns = [
@@ -104,20 +129,9 @@ const Equity = () => {
             <CButton
               type="button"
               size="sm"
-              color="secondary"
-              variant="outline"
-              onClick={() => console.log(row.meta_data)}
-            >
-              <CIcon icon={cilNotes} />
-            </CButton>
-          </CCol>
-          <CCol xs={3}>
-            <CButton
-              type="button"
-              size="sm"
               color="danger"
               variant="outline"
-              onClick={() => console.log(row.id)}
+              onClick={() => handleDeleteStock(row._id)}
             >
               <CIcon icon={cilTrash} />
             </CButton>
@@ -131,7 +145,7 @@ const Equity = () => {
     <LoadingContainer loading={loading}>
       <CRow>
         <CCol xs>
-          <FileUpload type="EQUITY" />
+          <FileUpload type="EQUITY" refetchNetworkData={handleCSVUpdateSuccess} />
         </CCol>
         <CCol xs>
           <CountrySelect value={selectedCountry} handleChange={handleCountryChange} />{' '}

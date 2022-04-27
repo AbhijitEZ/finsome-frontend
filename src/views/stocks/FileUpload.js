@@ -5,8 +5,9 @@ import { serviceAuthManager } from 'src/util'
 import { toast } from 'react-toastify'
 import CIcon from '@coreui/icons-react'
 import { cilReload } from '@coreui/icons'
+import { toastMessage } from 'src/helper/util'
 
-const FileUpload = ({ type }) => {
+const FileUpload = ({ type, refetchNetworkData }) => {
   const fileRef = React.useRef(null)
   const [loader, setLoader] = React.useState(false)
 
@@ -30,17 +31,10 @@ const FileUpload = ({ type }) => {
           draggable: true,
           progress: undefined,
         })
+        refetchNetworkData?.()
       })
       .catch((err) => {
-        toast.error(err?.response?.data?.message || 'CSV upload unsuccessfull', {
-          position: 'top-center',
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        })
+        toastMessage('error', err?.response?.data?.message || 'CSV upload unsuccessfull')
       })
       .finally(() => {
         setLoader(false)

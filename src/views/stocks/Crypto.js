@@ -4,10 +4,11 @@ import { serviceAuthManager } from 'src/util'
 import { RDTable } from 'src/components/RDTable'
 import LoadingContainer from 'src/components/LoadingContainer'
 import CIcon from '@coreui/icons-react'
-import { cilNotes, cilSearch, cilTrash } from '@coreui/icons'
+import { cilSearch, cilTrash } from '@coreui/icons'
 import { useFuzzyHandlerHook } from 'src/components/hook'
 import debounce from 'lodash.debounce'
 import FileUpload from './FileUpload'
+import { toastMessage } from 'src/helper/util'
 
 const Crypto = () => {
   const [stockCrypto, setStockCrypto] = React.useState([])
@@ -17,7 +18,7 @@ const Crypto = () => {
 
   const { fuzzyHandler } = useFuzzyHandlerHook()
 
-  const fetchStockEquity = async () => {
+  const fetchStock = async () => {
     serviceAuthManager('/post/stock-type?type=CRYPT&has_all_data=true', 'get', {}, true)
       .then((res) => {
         if (res.data?.data) {
@@ -30,7 +31,7 @@ const Crypto = () => {
   }
 
   React.useEffect(() => {
-    fetchStockEquity()
+    fetchStock()
   }, [])
 
   React.useEffect(() => {
@@ -56,12 +57,30 @@ const Crypto = () => {
     setCurrentSearchVal(evt.target.value)
   }
 
+  const handleCSVUpdateSuccess = () => {
+    fetchStock()
+  }
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounceFn = React.useCallback(debounce(handleSearchOnFormInpChange, 1000), [])
 
   const handleSearchInpChange = (evt) => {
     evt.preventDefault()
     setCurrentSearchVal(evt.target.elements.searchInput.value)
+  }
+
+  const handleDeleteStock = (id) => {
+    serviceAuthManager(`/stock/CRYPT/${id}`, 'delete')
+      .then(() => {
+        toastMessage('success', 'Deleted the stock successfully')
+        fetchStock()
+      })
+      .catch((err) => {
+        toastMessage(
+          'error',
+          err?.response?.data?.message || 'Error while deleting the particular stock',
+        )
+      })
   }
 
   const contactData = React.useMemo(
@@ -90,20 +109,9 @@ const Crypto = () => {
             <CButton
               type="button"
               size="sm"
-              color="secondary"
-              variant="outline"
-              onClick={() => console.log(row.meta_data)}
-            >
-              <CIcon icon={cilNotes} />
-            </CButton>
-          </CCol>
-          <CCol xs={3}>
-            <CButton
-              type="button"
-              size="sm"
               color="danger"
               variant="outline"
-              onClick={() => console.log(row.id)}
+              onClick={() => handleDeleteStock(row._id)}
             >
               <CIcon icon={cilTrash} />
             </CButton>
@@ -117,7 +125,7 @@ const Crypto = () => {
     <LoadingContainer loading={loading}>
       <CRow>
         <CCol xs>
-          <FileUpload type="CRYPT" />
+          <FileUpload type="CRYPT" refetchNetworkData={handleCSVUpdateSuccess} />
         </CCol>
         <CCol xs></CCol>
         <CCol xs className="align-self-end">
