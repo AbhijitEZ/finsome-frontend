@@ -1,6 +1,14 @@
 /* eslint-disable react/prop-types */
 import React from 'react'
-import { CButton, CModal, CModalHeader, CModalTitle, CModalBody, CModalFooter } from '@coreui/react'
+import {
+  CButton,
+  CModal,
+  CModalHeader,
+  CModalTitle,
+  CModalBody,
+  CModalFooter,
+  CSpinner,
+} from '@coreui/react'
 
 const AppModal = ({
   visible,
@@ -10,6 +18,7 @@ const AppModal = ({
   isSave = false,
   handleSaveClick,
   saveText,
+  isLoader,
   scrollable,
 }) => {
   return (
@@ -29,8 +38,14 @@ const AppModal = ({
             Close
           </CButton>
           {isSave ? (
-            <CButton color="primary" onClick={handleSaveClick}>
-              {saveText ? saveText : 'Save changes'}
+            <CButton color="primary" type="button" onClick={handleSaveClick}>
+              {isLoader ? (
+                <CSpinner size="sm" color="white" />
+              ) : saveText ? (
+                saveText
+              ) : (
+                'Save changes'
+              )}
             </CButton>
           ) : null}
         </CModalFooter>

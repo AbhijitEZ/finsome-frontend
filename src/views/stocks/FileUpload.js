@@ -48,6 +48,7 @@ const FileUpload = ({ type, refetchNetworkData }) => {
         variant="outline"
         onClick={handleFileUploadSelection}
         disabled={loader}
+        style={{ marginRight: 15 }}
       >
         {loader ? <CIcon icon={cilReload} /> : 'Upload CSV'}
       </CButton>

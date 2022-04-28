@@ -9,6 +9,7 @@ import { useFuzzyHandlerHook } from 'src/components/hook'
 import debounce from 'lodash.debounce'
 import FileUpload from './FileUpload'
 import { toastMessage } from 'src/helper/util'
+import StockAddModel from './StockAddModal'
 
 const Crypto = () => {
   const [stockCrypto, setStockCrypto] = React.useState([])
@@ -59,6 +60,21 @@ const Crypto = () => {
 
   const handleCSVUpdateSuccess = () => {
     fetchStock()
+  }
+
+  const handleAddCallback = (data, loader, visibleCB) => {
+    serviceAuthManager('/stock/CRYPT', 'post', data)
+      .then(() => {
+        toastMessage('success', 'Added the stock successfully')
+        fetchStock()
+      })
+      .catch(() => {
+        toastMessage('error', 'Error while adding the particular stock')
+      })
+      .finally(() => {
+        loader(false)
+        visibleCB(false)
+      })
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -126,6 +142,7 @@ const Crypto = () => {
       <CRow>
         <CCol xs>
           <FileUpload type="CRYPT" refetchNetworkData={handleCSVUpdateSuccess} />
+          <StockAddModel handleCallback={handleAddCallback} />
         </CCol>
         <CCol xs></CCol>
         <CCol xs className="align-self-end">

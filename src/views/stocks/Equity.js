@@ -10,6 +10,7 @@ import debounce from 'lodash.debounce'
 import CountrySelect from 'src/components/select/CountrySelect'
 import FileUpload from './FileUpload'
 import { toastMessage } from 'src/helper/util'
+import StockAddModel from './StockAddModal'
 
 const Equity = () => {
   const [stockEquities, setStockEquity] = React.useState([])
@@ -89,6 +90,21 @@ const Equity = () => {
       })
   }
 
+  const handleAddCallback = (data, loader, visibleCB) => {
+    serviceAuthManager('/stock/EQUITY', 'post', data)
+      .then(() => {
+        toastMessage('success', 'Added the stock successfully')
+        fetchStock()
+      })
+      .catch(() => {
+        toastMessage('error', 'Error while adding the particular stock')
+      })
+      .finally(() => {
+        loader(false)
+        visibleCB(false)
+      })
+  }
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounceFn = React.useCallback(debounce(handleSearchOnFormInpChange, 1000), [])
 
@@ -146,6 +162,7 @@ const Equity = () => {
       <CRow>
         <CCol xs>
           <FileUpload type="EQUITY" refetchNetworkData={handleCSVUpdateSuccess} />
+          <StockAddModel handleCallback={handleAddCallback} isCountry />
         </CCol>
         <CCol xs>
           <CountrySelect value={selectedCountry} handleChange={handleCountryChange} />{' '}

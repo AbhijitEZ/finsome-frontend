@@ -4,7 +4,7 @@ import { CFormSelect, CSpinner } from '@coreui/react'
 import lodashGet from 'lodash.get'
 import { useGlobalContext } from 'src/layout/GlobalContext'
 
-const CountrySelect = ({ value, handleChange }) => {
+const CountrySelect = ({ value, handleChange, required, ...rest }) => {
   const { state } = useGlobalContext()
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -15,7 +15,7 @@ const CountrySelect = ({ value, handleChange }) => {
   }
 
   return (
-    <CFormSelect value={value} onChange={handleChange}>
+    <CFormSelect value={value} onChange={handleChange} required={required} {...rest}>
       <option value="">Select Country</option>
       {result.map((country) => (
         <option value={country.code} key={country._id}>
