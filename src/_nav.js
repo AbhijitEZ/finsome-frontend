@@ -53,10 +53,6 @@ const _nav = [
     name: 'Terms Condition',
     to: '/terms-condition',
     icon: <CIcon icon={cilPaperclip} customClassName="nav-icon" />,
-    badge: {
-      color: 'info',
-      text: 'NEW',
-    },
   },
   {
     component: CNavGroup,
@@ -80,6 +76,16 @@ const _nav = [
         to: '/stocks/other',
       },
     ],
+  },
+  {
+    component: CNavItem,
+    name: 'Posts',
+    to: '/posts',
+    icon: <CIcon icon={cilPaperclip} customClassName="nav-icon" />,
+    badge: {
+      color: 'info',
+      text: 'NEW',
+    },
   },
   // {
   //   component: CNavGroup,

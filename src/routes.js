@@ -10,6 +10,7 @@ const Articles = React.lazy(() => import('./views/articles/Articles'))
 const Equity = React.lazy(() => import('./views/stocks/Equity'))
 const Crypto = React.lazy(() => import('./views/stocks/Crypto'))
 const Other = React.lazy(() => import('./views/stocks/Other'))
+const Posts = React.lazy(() => import('./views/posts/Posts'))
 
 // const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
@@ -72,6 +73,7 @@ const routes = [
   { path: '/stocks/equity', name: 'Equity', component: Equity },
   { path: '/stocks/crypto', name: 'Crypto', component: Crypto },
   { path: '/stocks/other', name: 'Other', component: Other },
+  { path: '/posts', name: 'Posts', component: Posts },
   /* !SECTION: Application routes */
   { path: '/theme/typography', name: 'Typography', component: Typography },
   { path: '/base', name: 'Base', component: Cards, exact: true },
