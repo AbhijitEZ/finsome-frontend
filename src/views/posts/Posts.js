@@ -8,8 +8,9 @@ import { cilNotes, cilSearch, cilTrash } from '@coreui/icons'
 import { useFuzzyHandlerHook } from 'src/components/hook'
 import debounce from 'lodash.debounce'
 import isEmpty from 'lodash.isempty'
-//import { toastMessage } from 'src/helper/util'
+import { toastMessage } from 'src/helper/util'
 import AppModal from 'src/components/AppModal'
+import CommentsListing from './CommentsListing'
 
 const Posts = () => {
   const [stockCrypto, setStockCrypto] = React.useState([])
@@ -18,6 +19,7 @@ const Posts = () => {
   const [currentSearchVal, setCurrentSearchVal] = React.useState('')
   const [viewModalCheck, setViewModalCheck] = React.useState(false)
   const [postDetail, setPostDetail] = React.useState({})
+  const [viewModalComment, setViewModalComment] = React.useState(false)
 
   const { fuzzyHandler } = useFuzzyHandlerHook()
 
@@ -26,7 +28,7 @@ const Posts = () => {
       .then((res) => {
         if (res.data?.data) {
           console.log(
-            res.data?.data?.result.filter((data) => data.security.length),
+            res.data?.data?.result.filter((data) => data.post_vids.length),
             'DATA',
           )
           setStockCrypto(res.data?.data?.result ?? [])
@@ -72,19 +74,23 @@ const Posts = () => {
     setPostDetail(data)
     setViewModalCheck(true)
   }
+  const triggerCommentModal = () => {
+    setViewModalCheck(false)
+    setViewModalComment(true)
+  }
 
   const handleDeletePost = (id) => {
-    // serviceAuthManager(`/stock/OTHER/${id}`, 'delete')
-    //   .then(() => {
-    //     toastMessage('success', 'Deleted the stock successfully')
-    //     fetchStock()
-    //   })
-    //   .catch((err) => {
-    //     toastMessage(
-    //       'error',
-    //       err?.response?.data?.message || 'Error while deleting the particular stock',
-    //     )
-    //   })
+    serviceAuthManager(`/post/delete/${id}`, 'delete', {}, true)
+      .then(() => {
+        toastMessage('success', 'Deleted the stock successfully')
+        fetchStock()
+      })
+      .catch((err) => {
+        toastMessage(
+          'error',
+          err?.response?.data?.message || 'Error while deleting the particular stock',
+        )
+      })
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -140,19 +146,6 @@ const Posts = () => {
             </CButton>
           </CCol>
         </CRow>
-        // <CRow className="w-100 activity-tab-cell flex-wrap overflow-visible">
-        //   <CCol xs={3}>
-        //     <CButton
-        //       type="button"
-        //       size="sm"
-        //       color="danger"
-        //       variant="outline"
-        //       onClick={() => handleDeletePost(row._id)}
-        //     >
-        //       <CIcon icon={cilTrash} />
-        //     </CButton>
-        //   </CCol>
-        // </CRow>
       ),
     },
   ]
@@ -369,9 +362,57 @@ const Posts = () => {
                 />
               </div>
             </div>
+            <hr />
+            <div className="row align-items-center mb-2">
+              <div className="col-3">
+                <label htmlFor="">PostImages</label>
+              </div>
+              <div className="col-8">
+                <ul className="post-assets-view-container">
+                  {postDetail?.post_images?.length
+                    ? postDetail?.post_images?.map((image) => (
+                        <li key={image}>
+                          <img src={image} alt="profile_image" />
+                        </li>
+                      ))
+                    : '-'}
+                </ul>
+              </div>
+            </div>
+            <hr />
+            <div className="row align-items-center mb-2">
+              <div className="col-3">
+                <label htmlFor="">PostVideos</label>
+              </div>
+              <div className="col-8">
+                <ul className="post-assets-view-container">
+                  {postDetail?.post_vids?.length
+                    ? postDetail?.post_vids?.map((vids) => (
+                        <li key={vids}>
+                          <video width="320" height="240" controls>
+                            <source src={vids} />
+                            Your browser does not support the video tag.
+                          </video>
+                        </li>
+                      ))
+                    : '-'}
+                </ul>
+              </div>
+            </div>
+            <hr />
+            <CButton color="primary" type="button" onClick={triggerCommentModal}>
+              Check comments
+            </CButton>
           </form>
         ) : null}
       </AppModal>
+      {viewModalComment ? (
+        <CommentsListing
+          viewModalComment
+          setViewModalComment={setViewModalComment}
+          id={postDetail?._id}
+        />
+      ) : null}
     </LoadingContainer>
   )
 }
