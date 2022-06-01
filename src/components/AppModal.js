@@ -20,6 +20,7 @@ const AppModal = ({
   saveText,
   isLoader,
   scrollable,
+  size,
 }) => {
   return (
     <>
@@ -28,6 +29,7 @@ const AppModal = ({
         scrollable={scrollable}
         visible={visible}
         onClose={() => setVisible(false)}
+        size={size}
       >
         <CModalHeader>
           <CModalTitle>{title}</CModalTitle>

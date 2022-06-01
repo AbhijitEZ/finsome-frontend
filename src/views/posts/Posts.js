@@ -114,10 +114,22 @@ const Posts = () => {
     {
       name: 'Fullname',
       selector: (row) => row.user?.fullname ?? '-',
+      width: '175px',
     },
     {
       name: 'Stock Type',
       selector: (row) => row.stock_type ?? '-',
+      width: '125px',
+    },
+    {
+      name: 'No of Comments',
+      selector: (row) => row.total_comments ?? '-',
+      width: '175px',
+    },
+    {
+      name: 'No of likes',
+      selector: (row) => row.total_likes ?? '-',
+      width: '125px',
     },
     {
       name: 'Activity',
