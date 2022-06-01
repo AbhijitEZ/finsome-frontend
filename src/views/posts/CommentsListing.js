@@ -56,7 +56,7 @@ const CommentsListing = ({ viewModalComment, setViewModalComment, id }) => {
   }, [])
 
   const handleCommentDelete = (comid) => {
-    serviceAuthManager(`/post/comment/delete/${id}/${comid}`, 'delete', {}, true)
+    serviceAuthManager(`/post/comment/${id}/${comid}`, 'delete', {}, true)
       .then(() => {
         toastMessage('success', 'Deleted the comment successfully')
         fetchStock()
