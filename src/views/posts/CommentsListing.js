@@ -125,7 +125,7 @@ const CommentsListing = ({ viewModalComment, setViewModalComment, id }) => {
         <RDTable
           columns={columns}
           data={commentData}
-          headerTitle={'Posts'}
+          headerTitle={'Comments'}
           pagination
           striped
           keyField="_id"
