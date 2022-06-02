@@ -87,6 +87,16 @@ const _nav = [
       text: 'NEW',
     },
   },
+  {
+    component: CNavItem,
+    name: 'ComplaintsPost',
+    to: '/complaints',
+    icon: <CIcon icon={cilPaperclip} customClassName="nav-icon" />,
+    badge: {
+      color: 'info',
+      text: 'NEW',
+    },
+  },
   // {
   //   component: CNavGroup,
   //   name: 'Base',
