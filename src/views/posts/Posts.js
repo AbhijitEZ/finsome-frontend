@@ -112,9 +112,19 @@ const Posts = () => {
       selector: (row) => row.caption ?? '-',
     },
     {
-      name: 'Fullname',
+      name: 'User Name',
       selector: (row) => row.user?.fullname ?? '-',
       width: '175px',
+    },
+    {
+      name: 'Analysis Type',
+      selector: (row) => row.analysis_type ?? '-',
+      width: '125px',
+    },
+    {
+      name: 'Trade Type',
+      selector: (row) => row.trade_type ?? '-',
+      width: '125px',
     },
     {
       name: 'Stock Type',
@@ -200,6 +210,7 @@ const Posts = () => {
         scrollable
         setVisible={setViewModalCheck}
         title="Post Details"
+        size={'lg'}
       >
         {!isEmpty(postDetail) ? (
           <form>

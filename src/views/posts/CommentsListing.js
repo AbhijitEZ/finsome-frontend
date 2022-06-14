@@ -4,7 +4,7 @@ import AppModal from 'src/components/AppModal'
 import { serviceAuthManager } from 'src/util'
 import LoadingContainer from 'src/components/LoadingContainer'
 import { RDTable } from 'src/components/RDTable'
-import { CAvatar, CButton, CCol, CRow } from '@coreui/react'
+import { CButton, CCol, CRow } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilTrash } from '@coreui/icons'
 import { toastMessage } from 'src/helper/util'
@@ -74,17 +74,14 @@ const CommentsListing = ({ viewModalComment, setViewModalComment, id }) => {
       name: 'User Details',
       selector: (row) => (
         <div className="d-flex">
-          <CAvatar size="md" className="user-profile-img" src={row.user?.profile_photo} />
-
-          <div className="d-flex flex-column ml-1">
-            <span className="font-weight-bold">{row.user?.fullname || 'N/A'}</span>
-          </div>
+          <span className="font-weight-bold">{row.user?.fullname || 'N/A'}</span>
         </div>
       ),
     },
     {
       name: 'Message',
       selector: (row) => row.message,
+      grow: 2,
     },
     {
       name: 'Is reply',
@@ -120,6 +117,7 @@ const CommentsListing = ({ viewModalComment, setViewModalComment, id }) => {
       scrollable
       setVisible={setViewModalComment}
       title="Comments"
+      size="lg"
     >
       <LoadingContainer loading={loading}>
         <RDTable
