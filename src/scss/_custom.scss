@@ -13,6 +13,10 @@
   margin-left: 2rem;
 }
 
+.text-right {
+  text-align: right;
+}
+
 .activity-tab-cell {
   text-overflow: unset !important;
   & > * {
@@ -31,5 +35,18 @@
   img {
     width: 100%;
     height: 100%;
+  }
+}
+
+.modal {
+  .modal-content {
+    .modal-body {
+      .form-control {
+        &[readonly] {
+          background: white;
+          border: none;
+        }
+      }
+    }
   }
 }

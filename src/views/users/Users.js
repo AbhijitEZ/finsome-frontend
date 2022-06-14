@@ -314,7 +314,7 @@ const Users = () => {
                 <CAvatar size="xl" className="user-profile-img" src={userDetails.profile_photo} />
               </div>
               <div className="row align-items-center mb-2">
-                <div className="col-3">
+                <div className="col-3 text-right">
                   <label htmlFor="">Fullname</label>
                 </div>
                 <div className="col-8">
@@ -328,7 +328,7 @@ const Users = () => {
                 </div>
               </div>
               <div className="row align-items-center mb-2">
-                <div className="col-3">
+                <div className="col-3 text-right">
                   <label htmlFor="">Email</label>
                 </div>
                 <div className="col-8">
@@ -342,7 +342,7 @@ const Users = () => {
                 </div>
               </div>
               <div className="row align-items-center mb-2">
-                <div className="col-3">
+                <div className="col-3 text-right">
                   <label htmlFor="">Gender</label>
                 </div>
                 <div className="col-8">
@@ -356,7 +356,7 @@ const Users = () => {
                 </div>
               </div>
               <div className="row align-items-center mb-2">
-                <div className="col-3">
+                <div className="col-3 text-right">
                   <label htmlFor="">Username</label>
                 </div>
                 <div className="col-8">
@@ -370,7 +370,7 @@ const Users = () => {
                 </div>
               </div>
               <div className="row align-items-center mb-2">
-                <div className="col-3">
+                <div className="col-3 text-right">
                   <label htmlFor="">Phone Number</label>
                 </div>
                 <div className="col-8">
@@ -384,7 +384,7 @@ const Users = () => {
                 </div>
               </div>
               <div className="row align-items-center mb-2">
-                <div className="col-3">
+                <div className="col-3 text-right">
                   <label htmlFor="">Registration Complete</label>
                 </div>
                 <div className="col-8">
@@ -398,7 +398,7 @@ const Users = () => {
                 </div>
               </div>
               <div className="row align-items-center mb-2">
-                <div className="col-3">
+                <div className="col-3 text-right">
                   <label htmlFor="">BirthDate</label>
                 </div>
                 <div className="col-8">
@@ -412,7 +412,7 @@ const Users = () => {
                 </div>
               </div>
               <div className="row align-items-center mb-2">
-                <div className="col-3">
+                <div className="col-3 text-right">
                   <label htmlFor="">Trading Exp</label>
                 </div>
                 <div className="col-8">
@@ -426,7 +426,7 @@ const Users = () => {
                 </div>
               </div>
               <div className="row align-items-center mb-2">
-                <div className="col-3">
+                <div className="col-3 text-right">
                   <label htmlFor="">Instagram Link</label>
                 </div>
                 <div className="col-8">
@@ -440,7 +440,7 @@ const Users = () => {
                 </div>
               </div>
               <div className="row align-items-center mb-2">
-                <div className="col-3">
+                <div className="col-3 text-right">
                   <label htmlFor="">Telegram Link</label>
                 </div>
                 <div className="col-8">
@@ -454,7 +454,7 @@ const Users = () => {
                 </div>
               </div>
               <div className="row align-items-center mb-2">
-                <div className="col-3">
+                <div className="col-3 text-right">
                   <label htmlFor="">Youtube Link</label>
                 </div>
                 <div className="col-8">
@@ -468,7 +468,7 @@ const Users = () => {
                 </div>
               </div>
               <div className="row align-items-center mb-2">
-                <div className="col-3">
+                <div className="col-3 text-right">
                   <label htmlFor="">Bio</label>
                 </div>
                 <div className="col-8">

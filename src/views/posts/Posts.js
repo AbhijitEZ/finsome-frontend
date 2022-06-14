@@ -214,11 +214,8 @@ const Posts = () => {
       >
         {!isEmpty(postDetail) ? (
           <form>
-            {/* <div className="d-flex">
-              <CAvatar size="xl" className="user-profile-img" src={postDetail.user} />
-            </div> */}
             <div className="row align-items-center mb-2">
-              <div className="col-3">
+              <div className="col-3 text-right">
                 <label htmlFor="">Fullname</label>
               </div>
               <div className="col-8">
@@ -232,7 +229,7 @@ const Posts = () => {
               </div>
             </div>
             <div className="row align-items-center mb-2">
-              <div className="col-3">
+              <div className="col-3 text-right">
                 <label htmlFor="">Stock Type</label>
               </div>
               <div className="col-8">
@@ -246,7 +243,7 @@ const Posts = () => {
               </div>
             </div>
             <div className="row align-items-center mb-2">
-              <div className="col-3">
+              <div className="col-3 text-right">
                 <label htmlFor="">Analysis Type</label>
               </div>
               <div className="col-8">
@@ -260,7 +257,7 @@ const Posts = () => {
               </div>
             </div>
             <div className="row align-items-center mb-2">
-              <div className="col-3">
+              <div className="col-3 text-right">
                 <label htmlFor="">Trade Type</label>
               </div>
               <div className="col-8">
@@ -274,7 +271,7 @@ const Posts = () => {
               </div>
             </div>
             <div className="row align-items-center mb-2">
-              <div className="col-3">
+              <div className="col-3 text-right">
                 <label htmlFor="">Caption</label>
               </div>
               <div className="col-8">
@@ -282,12 +279,13 @@ const Posts = () => {
                   className="form-control"
                   placeholder="-"
                   value={postDetail?.caption ?? ''}
+                  style={{ minHeight: 150 }}
                   readOnly
                 />
               </div>
             </div>
             <div className="row align-items-center mb-2">
-              <div className="col-3">
+              <div className="col-3 text-right">
                 <label htmlFor="">Total Comments</label>
               </div>
               <div className="col-8">
@@ -301,7 +299,7 @@ const Posts = () => {
               </div>
             </div>
             <div className="row align-items-center mb-2">
-              <div className="col-3">
+              <div className="col-3 text-right">
                 <label htmlFor="">Total Likes</label>
               </div>
               <div className="col-8">
@@ -315,7 +313,7 @@ const Posts = () => {
               </div>
             </div>
             <div className="row align-items-center mb-2">
-              <div className="col-3">
+              <div className="col-3 text-right">
                 <label htmlFor="">Stock Recommended Type</label>
               </div>
               <div className="col-8">
@@ -329,7 +327,7 @@ const Posts = () => {
               </div>
             </div>
             <div className="row align-items-center mb-2">
-              <div className="col-3">
+              <div className="col-3 text-right">
                 <label htmlFor="">Buy Recommend Amount</label>
               </div>
               <div className="col-8">
@@ -344,7 +342,7 @@ const Posts = () => {
             </div>
 
             <div className="row align-items-center mb-2">
-              <div className="col-3">
+              <div className="col-3 text-right">
                 <label htmlFor="">Sell Recommend Amount</label>
               </div>
               <div className="col-8">
@@ -358,7 +356,7 @@ const Posts = () => {
               </div>
             </div>
             <div className="row align-items-center mb-2">
-              <div className="col-3">
+              <div className="col-3 text-right">
                 <label htmlFor="">Is Recommended</label>
               </div>
               <div className="col-8">
@@ -372,7 +370,7 @@ const Posts = () => {
               </div>
             </div>
             <div className="row align-items-center mb-2">
-              <div className="col-3">
+              <div className="col-3 text-right">
                 <label htmlFor="">Security Ids</label>
               </div>
               <div className="col-8">
@@ -381,13 +379,14 @@ const Posts = () => {
                   className="form-control"
                   placeholder="-"
                   value={postDetail?.security?.length ? JSON.stringify(postDetail?.security) : ''}
+                  style={{ minHeight: 85 }}
                   readOnly
                 />
               </div>
             </div>
             <hr />
             <div className="row align-items-center mb-2">
-              <div className="col-3">
+              <div className="col-3 text-right">
                 <label htmlFor="">PostImages</label>
               </div>
               <div className="col-8">
@@ -404,7 +403,7 @@ const Posts = () => {
             </div>
             <hr />
             <div className="row align-items-center mb-2">
-              <div className="col-3">
+              <div className="col-3 text-right">
                 <label htmlFor="">PostVideos</label>
               </div>
               <div className="col-8">
