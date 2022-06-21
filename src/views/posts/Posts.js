@@ -109,7 +109,11 @@ const Posts = () => {
   const columns = [
     {
       name: 'Caption',
-      selector: (row) => row.caption ?? '-',
+      selector: (row) => (
+        <div className="addwrap-col">
+          <span>{row.caption ?? '-'}</span>
+        </div>
+      ),
     },
     {
       name: 'User Name',
