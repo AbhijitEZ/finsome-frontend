@@ -27,10 +27,7 @@ const Posts = () => {
     serviceAuthManager('/post/home?has_all_data=true', 'get', {}, true)
       .then((res) => {
         if (res.data?.data) {
-          console.log(
-            res.data?.data?.result.filter((data) => data.post_vids.length),
-            'DATA',
-          )
+          console.log(res.data?.data?.result, 'DATA')
           setStockCrypto(res.data?.data?.result ?? [])
         }
       })
@@ -108,14 +105,6 @@ const Posts = () => {
 
   const columns = [
     {
-      name: 'Caption',
-      selector: (row) => (
-        <div className="addwrap-col">
-          <span>{row.caption ?? '-'}</span>
-        </div>
-      ),
-    },
-    {
       name: 'User Name',
       selector: (row) => row.user?.fullname ?? '-',
       width: '175px',
@@ -136,14 +125,25 @@ const Posts = () => {
       width: '125px',
     },
     {
-      name: 'No of Comments',
-      selector: (row) => row.total_comments ?? '-',
-      width: '175px',
+      name: 'Stock Names',
+      selector: (row) => {
+        if (!row.security.length) {
+          return '-'
+        }
+
+        const data = row.security.map((element) => element.name).join(',')
+        return data
+      },
     },
     {
-      name: 'No of likes',
+      name: 'Comments',
+      selector: (row) => row.total_comments ?? '-',
+      width: '120px',
+    },
+    {
+      name: 'likes',
       selector: (row) => row.total_likes ?? '-',
-      width: '125px',
+      width: '100px',
     },
     {
       name: 'Activity',

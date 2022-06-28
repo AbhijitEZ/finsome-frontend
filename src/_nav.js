@@ -82,10 +82,6 @@ const _nav = [
     name: 'Posts',
     to: '/posts',
     icon: <CIcon icon={cilPaperclip} customClassName="nav-icon" />,
-    badge: {
-      color: 'info',
-      text: 'NEW',
-    },
   },
   {
     component: CNavItem,
