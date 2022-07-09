@@ -6,6 +6,7 @@ import isEmpty from 'lodash.isempty'
 import { cilSearch, cilNotes, cilTrash } from '@coreui/icons'
 import avatar1 from 'src/assets/images/avatars/placeholder.jpg'
 import { dateFormatHandler, serviceAuthManager } from 'src/util'
+import UserRate from './UserRate'
 import AppModal from 'src/components/AppModal'
 import LoadingContainer from 'src/components/LoadingContainer'
 import { useFuzzyHandlerHook } from 'src/components/hook'
@@ -16,6 +17,7 @@ import { useHistory } from 'react-router-dom'
 const Users = () => {
   const [viewModalCheck, setViewModalCheck] = React.useState(false)
   const [deleteUserModalVisible, setDeleteUserModalVisible] = React.useState(false)
+  const [viewModalRate, setViewModalRate] = React.useState(false)
   const [deleteUserId, setDeleteUserId] = React.useState('')
   const [userDetails, setUserDetails] = React.useState({})
   const [users, setUsers] = React.useState([])
@@ -68,6 +70,11 @@ const Users = () => {
       .finally(() => {
         setLoading(false)
       })
+  }
+
+  const triggerRateModal = () => {
+    setViewModalCheck(false)
+    setViewModalRate(true)
   }
 
   React.useEffect(() => {
@@ -311,7 +318,11 @@ const Users = () => {
           {!isEmpty(userDetails) ? (
             <form>
               <div className="d-flex">
-                <CAvatar size="xl" className="user-profile-img" src={userDetails.profile_photo} />
+                <CAvatar
+                  size="xl"
+                  className="user-profile-img"
+                  src={userDetails.profile_photo || avatar1}
+                />
               </div>
               <div className="row align-items-center mb-2">
                 <div className="col-3 text-right">
@@ -481,6 +492,10 @@ const Users = () => {
                   />
                 </div>
               </div>
+              <hr />
+              <CButton color="primary" type="button" onClick={triggerRateModal}>
+                Check User Rating
+              </CButton>
             </form>
           ) : null}
         </AppModal>
@@ -496,6 +511,9 @@ const Users = () => {
           <h5>Are you sure to delete this user?</h5>
         </AppModal>
       </CRow>
+      {viewModalRate ? (
+        <UserRate viewModalRate setViewModalRate={setViewModalRate} id={userDetails?._id} />
+      ) : null}
     </LoadingContainer>
   )
 }
