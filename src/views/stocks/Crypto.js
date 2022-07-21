@@ -113,10 +113,10 @@ const Crypto = () => {
       name: 'Code',
       selector: (row) => row.code,
     },
-    {
-      name: 'Image',
-      selector: (row) => row.image || '-',
-    },
+    // {
+    //   name: 'Image',
+    //   selector: (row) => row.image || '-',
+    // },
     {
       name: 'Activity',
       selector: (row) => (

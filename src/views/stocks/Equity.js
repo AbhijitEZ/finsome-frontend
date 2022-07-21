@@ -11,6 +11,8 @@ import CountrySelect from 'src/components/select/CountrySelect'
 import FileUpload from './FileUpload'
 import { toastMessage } from 'src/helper/util'
 import StockAddModel from './StockAddModal'
+import lodashGet from 'lodash.get'
+import { useGlobalContext } from 'src/layout/GlobalContext'
 
 const Equity = () => {
   const [stockEquities, setStockEquity] = React.useState([])
@@ -19,6 +21,7 @@ const Equity = () => {
   const [currentSearchVal, setCurrentSearchVal] = React.useState('')
   const [selectedCountry, setCountry] = React.useState('')
   const { fuzzyHandler } = useFuzzyHandlerHook()
+  const { state } = useGlobalContext()
 
   const fetchStock = async () => {
     serviceAuthManager('/post/stock-type?type=EQUITY&has_all_data=true', 'get', {}, true)
@@ -119,6 +122,8 @@ const Equity = () => {
     [equityFilter, stockEquities, currentSearchVal, selectedCountry],
   )
 
+  const { result } = React.useMemo(() => lodashGet(state, 'country', {}), [state.country])
+
   const columns = [
     {
       name: 'Name',
@@ -130,18 +135,25 @@ const Equity = () => {
     },
     {
       name: 'Country Code',
-      selector: (row) => row.country_code || '-',
+      selector: (row) => {
+        var data = result.filter((a) => a.code === row.country_code)
+        if (data.length === 1) {
+          return data[0].name
+        } else {
+          return '-'
+        }
+      },
       grow: 2,
     },
-    {
-      name: 'Image',
-      selector: (row) => row.image || '-',
-    },
+    // {
+    //   name: 'Image',
+    //   selector: (row) => row.image || '-',
+    // },
     {
       name: 'Activity',
       selector: (row) => (
         <CRow className="w-100 activity-tab-cell flex-wrap overflow-visible">
-          <CCol xs={3}>
+          <CCol xs={12}>
             <CButton
               type="button"
               size="sm"

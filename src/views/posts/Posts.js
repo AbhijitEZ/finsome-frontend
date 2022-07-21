@@ -1,6 +1,6 @@
 import React from 'react'
 import { CButton, CCol, CFormInput, CInputGroup, CRow } from '@coreui/react'
-import { serviceAuthManager } from 'src/util'
+import { dateFormatHandler, serviceAuthManager } from 'src/util'
 import { RDTable } from 'src/components/RDTable'
 import LoadingContainer from 'src/components/LoadingContainer'
 import CIcon from '@coreui/icons-react'
@@ -105,9 +105,21 @@ const Posts = () => {
 
   const columns = [
     {
+      name: 'Post ID',
+      selector: (row) => {
+        return row._id
+        // var index = contactData.indexOf(row)
+        // return index + 1
+      },
+    },
+    {
       name: 'User Name',
       selector: (row) => row.user?.fullname ?? '-',
-      width: '175px',
+    },
+    {
+      name: 'Post Type',
+      selector: (row) => row.stock_type ?? '-',
+      width: '125px',
     },
     {
       name: 'Analysis Type',
@@ -115,13 +127,28 @@ const Posts = () => {
       width: '125px',
     },
     {
-      name: 'Trade Type',
-      selector: (row) => row.trade_type ?? '-',
+      name: 'Market Name',
+      selector: (row) => {
+        if (!row.security.length) {
+          return '-'
+        }
+
+        var country = []
+        row.security.forEach((element) => {
+          if (element?.country_data != null) {
+            var eleLength = country.filter((e) => e === element?.country_data?.name.toUpperCase())
+            if (eleLength.length === 0) {
+              country.push(element?.country_data?.name.toUpperCase())
+            }
+          }
+        })
+        return country.length > 0 ? country.join(', ') : '-'
+      },
       width: '125px',
     },
     {
-      name: 'Stock Type',
-      selector: (row) => row.stock_type ?? '-',
+      name: 'Trade Type',
+      selector: (row) => row.trade_type ?? '-',
       width: '125px',
     },
     {
@@ -131,25 +158,31 @@ const Posts = () => {
           return '-'
         }
 
-        const data = row.security.map((element) => element.name).join(',')
+        const data = row.security.map((element) => element.name).join(', ')
         return data
       },
     },
+    // {
+    //   name: 'Comments',
+    //   selector: (row) => row.total_comments ?? '-',
+    //   width: '120px',
+    // },
+    // {
+    //   name: 'likes',
+    //   selector: (row) => row.total_likes ?? '-',
+    //   width: '100px',
+    // },
     {
-      name: 'Comments',
-      selector: (row) => row.total_comments ?? '-',
-      width: '120px',
-    },
-    {
-      name: 'likes',
-      selector: (row) => row.total_likes ?? '-',
-      width: '100px',
+      name: 'Date',
+      selector: (row) => dateFormatHandler(row.created_at, true) ?? '-',
+      width: '180px',
     },
     {
       name: 'Activity',
+      width: '180px',
       selector: (row) => (
         <CRow className="w-100 activity-tab-cell flex-wrap overflow-visible">
-          <CCol xs={3}>
+          <CCol xs={4}>
             <CButton
               type="button"
               size="sm"
@@ -160,7 +193,7 @@ const Posts = () => {
               <CIcon icon={cilNotes} />
             </CButton>
           </CCol>
-          <CCol xs={3}>
+          <CCol xs={4}>
             <CButton
               type="button"
               size="sm"
@@ -218,215 +251,196 @@ const Posts = () => {
       >
         {!isEmpty(postDetail) ? (
           <form>
-            <div className="row align-items-center mb-2">
-              <div className="col-3 text-right">
-                <label htmlFor="">Fullname</label>
+            <div className="row">
+              <div className="col-md-3 mb-3">
+                <div className="form-group">
+                  <label style={{ fontWeight: '500' }}>Fullname</label>
+                  <input
+                    type="text"
+                    className="form-control px-0 py-0"
+                    placeholder="-"
+                    value={postDetail.user?.fullname ?? ''}
+                    readOnly
+                  />
+                </div>
               </div>
-              <div className="col-8">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="-"
-                  value={postDetail.user?.fullname ?? ''}
-                  readOnly
-                />
+
+              <div className="col-md-3 mb-3">
+                <div className="form-group">
+                  <label style={{ fontWeight: '500' }}>Post Type</label>
+                  <input
+                    type="text"
+                    className="form-control px-0 py-0"
+                    placeholder="-"
+                    value={postDetail.stock_type ?? ''}
+                    readOnly
+                  />
+                </div>
               </div>
-            </div>
-            <div className="row align-items-center mb-2">
-              <div className="col-3 text-right">
-                <label htmlFor="">Stock Type</label>
+
+              <div className="col-md-3 mb-3">
+                <div className="form-group">
+                  <label style={{ fontWeight: '500' }}>Analysis Type</label>
+                  <input
+                    type="text"
+                    className="form-control px-0 py-0"
+                    placeholder="-"
+                    value={postDetail.analysis_type ?? ''}
+                    readOnly
+                  />
+                </div>
               </div>
-              <div className="col-8">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="-"
-                  value={postDetail?.stock_type ?? ''}
-                  readOnly
-                />
+
+              <div className="col-md-3 mb-3">
+                <div className="form-group">
+                  <label style={{ fontWeight: '500' }}>Trade Type</label>
+                  <input
+                    type="text"
+                    className="form-control px-0 py-0"
+                    placeholder="-"
+                    value={postDetail.trade_type ?? ''}
+                    readOnly
+                  />
+                </div>
               </div>
-            </div>
-            <div className="row align-items-center mb-2">
-              <div className="col-3 text-right">
-                <label htmlFor="">Analysis Type</label>
+
+              <div className="col-md-4 mb-3">
+                <div className="form-group">
+                  <label style={{ fontWeight: '500' }}>Total Comments</label>
+                  <input
+                    type="text"
+                    className="form-control px-0 py-0"
+                    placeholder="-"
+                    value={postDetail.total_comments ?? ''}
+                    readOnly
+                  />
+                </div>
               </div>
-              <div className="col-8">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="-"
-                  value={postDetail?.analysis_type ?? ''}
-                  readOnly
-                />
+
+              <div className="col-md-4 mb-3">
+                <div className="form-group">
+                  <label style={{ fontWeight: '500' }}>Total Likes</label>
+                  <input
+                    type="text"
+                    className="form-control px-0 py-0"
+                    placeholder="-"
+                    value={postDetail.total_likes ?? ''}
+                    readOnly
+                  />
+                </div>
               </div>
-            </div>
-            <div className="row align-items-center mb-2">
-              <div className="col-3 text-right">
-                <label htmlFor="">Trade Type</label>
+
+              <div className="col-md-4 mb-3">
+                <div className="form-group">
+                  <label style={{ fontWeight: '500' }}>Stock Recommended Type</label>
+                  <input
+                    type="text"
+                    className="form-control px-0 py-0"
+                    placeholder="-"
+                    value={postDetail.stock_recommended_type ?? ''}
+                    readOnly
+                  />
+                </div>
               </div>
-              <div className="col-8">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="-"
-                  value={postDetail?.trade_type ?? ''}
-                  readOnly
-                />
+
+              <div className="col-md-4 mb-3">
+                <div className="form-group">
+                  <label style={{ fontWeight: '500' }}>Buy Recommend Amount</label>
+                  <input
+                    type="text"
+                    className="form-control px-0 py-0"
+                    placeholder="-"
+                    value={postDetail.buy_recommend_amount ?? ''}
+                    readOnly
+                  />
+                </div>
               </div>
-            </div>
-            <div className="row align-items-center mb-2">
-              <div className="col-3 text-right">
-                <label htmlFor="">Caption</label>
+
+              <div className="col-md-4 mb-3">
+                <div className="form-group">
+                  <label style={{ fontWeight: '500' }}>Sell Recommend Amount</label>
+                  <input
+                    type="text"
+                    className="form-control px-0 py-0"
+                    placeholder="-"
+                    value={postDetail.sell_recommend_amount ?? ''}
+                    readOnly
+                  />
+                </div>
               </div>
-              <div className="col-8">
-                <textarea
-                  className="form-control"
-                  placeholder="-"
-                  value={postDetail?.caption ?? ''}
-                  style={{ minHeight: 150 }}
-                  readOnly
-                />
+
+              <div className="col-md-3 mb-3">
+                <div className="form-group">
+                  <label style={{ fontWeight: '500' }}>Is Recommended</label>
+                  <input
+                    type="text"
+                    className="form-control px-0 py-0"
+                    placeholder="-"
+                    value={
+                      postDetail?.is_recommended != null
+                        ? postDetail?.is_recommended
+                          ? 'Yes'
+                          : 'No'
+                        : ''
+                    }
+                    readOnly
+                  />
+                </div>
               </div>
-            </div>
-            <div className="row align-items-center mb-2">
-              <div className="col-3 text-right">
-                <label htmlFor="">Total Comments</label>
+
+              <div className="col-md-3 mb-3">
+                <div className="form-group">
+                  <label style={{ fontWeight: '500' }}>Stock Names</label>
+                  <div>
+                    {postDetail?.security?.length
+                      ? postDetail?.security.map((e) => e.name).join(', ')
+                      : '-'}
+                  </div>
+                </div>
               </div>
-              <div className="col-8">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="-"
-                  value={postDetail?.total_comments ?? 0}
-                  readOnly
-                />
-              </div>
-            </div>
-            <div className="row align-items-center mb-2">
-              <div className="col-3 text-right">
-                <label htmlFor="">Total Likes</label>
-              </div>
-              <div className="col-8">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="-"
-                  value={postDetail?.total_likes ?? 0}
-                  readOnly
-                />
-              </div>
-            </div>
-            <div className="row align-items-center mb-2">
-              <div className="col-3 text-right">
-                <label htmlFor="">Stock Recommended Type</label>
-              </div>
-              <div className="col-8">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="-"
-                  value={postDetail?.stock_recommended_type ?? ''}
-                  readOnly
-                />
-              </div>
-            </div>
-            <div className="row align-items-center mb-2">
-              <div className="col-3 text-right">
-                <label htmlFor="">Buy Recommend Amount</label>
-              </div>
-              <div className="col-8">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="-"
-                  value={postDetail?.buy_recommend_amount ?? ''}
-                  readOnly
-                />
+
+              <div className="col-md-6 mb-3">
+                <div className="form-group">
+                  <label style={{ fontWeight: '500' }}>Caption</label>
+                  <div>{postDetail?.caption ?? ''}</div>
+                </div>
               </div>
             </div>
 
-            <div className="row align-items-center mb-2">
-              <div className="col-3 text-right">
-                <label htmlFor="">Sell Recommend Amount</label>
-              </div>
-              <div className="col-8">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="-"
-                  value={postDetail?.sell_recommend_amount ?? ''}
-                  readOnly
-                />
-              </div>
+            <h5 className="mt-4">Post Images</h5>
+            <div className="row mt-2">
+              {postDetail?.post_images?.length ? (
+                postDetail?.post_images?.map((image) => (
+                  <div key={image} className="col-md-4">
+                    <img src={image} alt="profile_image" width="100%" />
+                  </div>
+                ))
+              ) : (
+                <div className="col-md-4">-</div>
+              )}
             </div>
-            <div className="row align-items-center mb-2">
-              <div className="col-3 text-right">
-                <label htmlFor="">Is Recommended</label>
-              </div>
-              <div className="col-8">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="-"
-                  value={postDetail?.is_recommended ?? ''}
-                  readOnly
-                />
-              </div>
+
+            <h5 className="mt-4">Post Videos</h5>
+            <div className="row mt-2 ">
+              {postDetail?.post_vids?.length ? (
+                postDetail?.post_vids?.map((vids) => (
+                  <div key={vids} className="col-md-4">
+                    <video width="320" height="240" controls>
+                      <source src={vids} />
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                ))
+              ) : (
+                <div className="col-md-4">-</div>
+              )}
             </div>
-            <div className="row align-items-center mb-2">
-              <div className="col-3 text-right">
-                <label htmlFor="">Security Ids</label>
-              </div>
-              <div className="col-8">
-                <textarea
-                  type="text"
-                  className="form-control"
-                  placeholder="-"
-                  value={postDetail?.security?.length ? JSON.stringify(postDetail?.security) : ''}
-                  style={{ minHeight: 85 }}
-                  readOnly
-                />
-              </div>
-            </div>
-            <hr />
-            <div className="row align-items-center mb-2">
-              <div className="col-3 text-right">
-                <label htmlFor="">PostImages</label>
-              </div>
-              <div className="col-8">
-                <ul className="post-assets-view-container">
-                  {postDetail?.post_images?.length
-                    ? postDetail?.post_images?.map((image) => (
-                        <li key={image}>
-                          <img src={image} alt="profile_image" />
-                        </li>
-                      ))
-                    : '-'}
-                </ul>
-              </div>
-            </div>
-            <hr />
-            <div className="row align-items-center mb-2">
-              <div className="col-3 text-right">
-                <label htmlFor="">PostVideos</label>
-              </div>
-              <div className="col-8">
-                <ul className="post-assets-view-container">
-                  {postDetail?.post_vids?.length
-                    ? postDetail?.post_vids?.map((vids) => (
-                        <li key={vids}>
-                          <video width="320" height="240" controls>
-                            <source src={vids} />
-                            Your browser does not support the video tag.
-                          </video>
-                        </li>
-                      ))
-                    : '-'}
-                </ul>
-              </div>
-            </div>
-            <hr />
-            <CButton color="primary" type="button" onClick={triggerCommentModal}>
+            <CButton
+              color="success"
+              className="btn-sm text-white mt-2"
+              type="button"
+              onClick={triggerCommentModal}
+            >
               Check comments
             </CButton>
           </form>

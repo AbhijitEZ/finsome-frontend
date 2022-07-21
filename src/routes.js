@@ -3,10 +3,10 @@ import React from 'react'
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Users = React.lazy(() => import('./views/users/Users'))
 const AppImprovement = React.lazy(() => import('./views/app-improvement/AppImprovement'))
+const ArticleCategory = React.lazy(() => import('./views/articles/ArticleCategory'))
 const QuickContact = React.lazy(() => import('./views/contacts/QuickContact'))
 const PrivacyPolicy = React.lazy(() => import('./views/privacy-policy/PrivacyPolicy'))
 const TermsCondition = React.lazy(() => import('./views/terms-condition/TermsCondition'))
-const Articles = React.lazy(() => import('./views/articles/Articles'))
 const Equity = React.lazy(() => import('./views/stocks/Equity'))
 const Crypto = React.lazy(() => import('./views/stocks/Crypto'))
 const Other = React.lazy(() => import('./views/stocks/Other'))
@@ -66,10 +66,10 @@ const routes = [
   /* SECTION: Application routes */
   { path: '/users', name: 'Users', component: Users },
   { path: '/app-improvement-suggestion', name: 'App Improvement', component: AppImprovement },
+  { path: '/article', name: 'Article', component: ArticleCategory },
   { path: '/quick-contacts', name: 'Contacts', component: QuickContact },
   { path: '/privacy-policy', name: 'Privacy Policy', component: PrivacyPolicy },
   { path: '/terms-condition', name: 'Terms Condition', component: TermsCondition },
-  { path: '/articles', name: 'Articles', component: Articles },
   { path: '/stocks', name: 'Stocks', component: Equity, exact: true },
   { path: '/stocks/equity', name: 'Equity', component: Equity },
   { path: '/stocks/crypto', name: 'Crypto', component: Crypto },

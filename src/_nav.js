@@ -88,6 +88,12 @@ const _nav = [
     name: 'ComplaintsPost',
     to: '/complaints',
     icon: <CIcon icon={cilPaperclip} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Article',
+    to: '/article',
+    icon: <CIcon icon={cilPaperclip} customClassName="nav-icon" />,
     badge: {
       color: 'info',
       text: 'NEW',

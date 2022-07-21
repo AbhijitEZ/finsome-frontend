@@ -2,20 +2,15 @@
 import { CButton, CCol, CForm, CFormInput, CFormLabel, CRow } from '@coreui/react'
 import React from 'react'
 import AppModal from 'src/components/AppModal'
-import CountrySelect from 'src/components/select/CountrySelect'
 
-const StockAddModel = ({ handleCallback, isCountry }) => {
+const ArticleCatAdd = ({ handleCallback }) => {
   const [addStockModalVisible, handleStockModalVisible] = React.useState(false)
-  const [selectedCountry, setCountry] = React.useState('')
   const [loader, setLoader] = React.useState(false)
   const formRef = React.useRef(null)
   const formResetRef = React.useRef(null)
 
   const handleOpenModal = () => {
     handleStockModalVisible(true)
-  }
-  const handleCountryChange = (e) => {
-    setCountry(e.target.value || '')
   }
 
   const handleAddSaveModalInt = (e) => {
@@ -26,20 +21,14 @@ const StockAddModel = ({ handleCallback, isCountry }) => {
     e.preventDefault()
     const payload = {
       name: e.target.name.value,
-      code: e.target.name.value,
-      image: e.target.name.image,
     }
 
-    if (isCountry) {
-      payload.country_code = selectedCountry
-    }
     setLoader(true)
     handleCallback(payload, setLoader, handleStockModalVisible)
   }
 
   React.useEffect(() => {
     if (!addStockModalVisible) {
-      setCountry('')
       formResetRef?.current?.click()
     }
   }, [addStockModalVisible])
@@ -52,7 +41,7 @@ const StockAddModel = ({ handleCallback, isCountry }) => {
       <AppModal
         visible={addStockModalVisible}
         setVisible={handleStockModalVisible}
-        title="Add Stock?"
+        title="Add Article Category?"
         isSave
         saveText={'Yes'}
         isLoader={loader}
@@ -64,42 +53,10 @@ const StockAddModel = ({ handleCallback, isCountry }) => {
               Name
             </CFormLabel>
             <CCol sm={10}>
-              <CFormInput type="text" id="nameStock" label="" name="name" required />
+              <CFormInput type="text" id="nameStock" name="name" required />
             </CCol>
           </CRow>
 
-          {isCountry && (
-            <CRow className="mb-3">
-              <CFormLabel htmlFor="countryCodeStock" className="col-sm-2 col-form-label">
-                Country
-              </CFormLabel>
-              <CCol sm={10}>
-                <CountrySelect
-                  value={selectedCountry}
-                  id="countryCodeStock"
-                  handleChange={handleCountryChange}
-                  required
-                />
-              </CCol>
-            </CRow>
-          )}
-
-          <CRow className="mb-3">
-            <CFormLabel htmlFor="codeStock" className="col-sm-2 col-form-label">
-              Code
-            </CFormLabel>
-            <CCol sm={10}>
-              <CFormInput type="text" id="codeStock" label="" name="code" required />
-            </CCol>
-          </CRow>
-          {/* <CRow className="mb-3">
-            <CFormLabel htmlFor="imageStock" className="col-sm-2 col-form-label">
-              Image
-            </CFormLabel>
-            <CCol sm={10}>
-              <CFormInput type="text" id="imageStock" label="Image" name="image" />
-            </CCol>
-          </CRow> */}
           <input type="submit" style={{ display: 'none' }} ref={formRef} />
           <input type="reset" style={{ display: 'none' }} ref={formResetRef} />
         </CForm>
@@ -108,4 +65,4 @@ const StockAddModel = ({ handleCallback, isCountry }) => {
   )
 }
 
-export default StockAddModel
+export default ArticleCatAdd
